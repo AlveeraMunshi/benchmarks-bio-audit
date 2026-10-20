@@ -1,0 +1,13 @@
+bench,exclude_refusals,refusal_is_fail,cells,rule_in_use
+epibench,33,38,38,refusal_is_fail
+functionbench,38,9,38,exclude_refusals
+metagenomics,27,37,37,refusal_is_fail
+scbench,33,38,38,refusal_is_fail
+scbench-long,36,41,41,refusal_is_fail
+spatialbench,36,38,38,refusal_is_fail
+spatialbench-long,37,41,41,refusal_is_fail
+surveillancebench,38,10,38,exclude_refusals
+txbench-ad,10,37,37,refusal_is_fail
+txbench-od,23,38,38,refusal_is_fail
+txbench-pp,33,37,37,refusal_is_fail
+variantbench,32,38,38,refusal_is_fail

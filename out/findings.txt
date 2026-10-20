@@ -1,0 +1,69 @@
+## 0. Reproduction
+reproduced 459/459 published board scores (max error 0.0050 pts)
+runs=144,557  refusals=8,364 (5.79%)  spend=$226,970  tokens=299B
+
+## 1. The scoring rule is not the documented one on 10 of 12 boards
+            bench  exclude_refusals  refusal_is_fail  cells      rule_in_use
+         epibench                33               38     38  refusal_is_fail
+    functionbench                38                9     38 exclude_refusals
+     metagenomics                27               37     37  refusal_is_fail
+          scbench                33               38     38  refusal_is_fail
+     scbench-long                36               41     41  refusal_is_fail
+     spatialbench                36               38     38  refusal_is_fail
+spatialbench-long                37               41     41  refusal_is_fail
+surveillancebench                38               10     38 exclude_refusals
+       txbench-ad                10               37     37  refusal_is_fail
+       txbench-od                23               38     38  refusal_is_fail
+       txbench-pp                33               37     37  refusal_is_fail
+     variantbench                32               38     38  refusal_is_fail
+
+biggest rank move when the documented rule is applied uniformly:
+                      as_published  all_exclude  min_coverage  rank_published  rank_all_exclude  move
+mid                                                                                                  
+opus-5-5-claude-code          37.6         56.2           2.7            16.0               1.0  15.0
+opus-5-5-pi                   37.5         55.4           4.4            18.0               3.0  15.0
+grok-4-6-grok-build           42.5         42.5         100.0            11.0              14.0  -3.0
+gpt-5-6-sol-pi                41.3         41.4          72.5            13.0              16.0  -3.0
+
+## 2. On the two refusal-excluding boards, rank rests on a handful of items
+
+functionbench:
+                      mid  score  items_scored  shown_rank  rank_lo  rank_hi  p_rank1
+              opus-5-5-pi   73.6            12         1.0      1.0      7.0     80.8
+     opus-5-5-claude-code   61.5            13         2.0      1.0     27.0     12.6
+         opus-5-5-lsvp-pi   56.1           110         3.0      2.0      7.0      2.2
+opus-5-5-lsvp-claude-code   54.2           110         4.0      2.0     10.0      0.8
+   sonnet-5-5-claude-code   53.5            82         5.0      2.0     11.0      2.2
+            sonnet-5-5-pi   51.7            78         6.0      2.0     15.0      0.5
+
+surveillancebench:
+                        mid  score  items_scored  shown_rank  rank_lo  rank_hi  p_rank1
+           opus-5-5-lsvp-pi   60.8           102         1.0      1.0      4.0     58.3
+       opus-5-5-claude-code   58.5            43         2.0      1.0     15.0     27.4
+  opus-5-5-lsvp-claude-code   57.8           102         3.0      2.0      7.0      2.2
+                opus-5-5-pi   55.8            43         4.0      1.0     22.0     10.6
+sonnet-5-5-lsvp-claude-code   54.6           102         5.0      2.0     12.0      0.2
+         sonnet-5-5-lsvp-pi   54.6           102         6.0      2.0     13.0      0.3
+
+scbench:
+                      mid  score  items_scored  shown_rank  rank_lo  rank_hi  p_rank1
+           gpt-6-astra-pi   63.9           195         1.0      1.0      8.0     35.8
+        gpt-6-1-sol-codex   63.6           195         2.0      1.0      9.0     27.2
+        gpt-6-astra-codex   63.4           195         3.0      1.0      9.0      9.2
+           gpt-6-1-sol-pi   62.9           195         4.0      1.0     12.0      6.2
+         opus-5-5-lsvp-pi   61.9           195         5.0      1.0     14.0     11.0
+opus-5-5-lsvp-claude-code   61.5           195         6.0      1.0     13.0      3.5
+
+## 3. Item information and what the suite spends on items that move nothing
+items analysed: 1179
+  never solved by any model :  166 (14.1%)  $50,319
+  solved by nearly all      :   35 (3.0%)  $1,710
+  uninformative overall     :  390 (33.1%)  $85,785 = 37.8% of spend
+
+keeping only the most discriminating items:
+ keep_frac  n_items       cost  spearman  top10_overlap
+     1.000     1179 224156.584     1.000             10
+     0.600      707 119252.600     0.990             10
+     0.400      472  74228.962     0.985             10
+     0.300      354  59405.382     0.984             10
+     0.200      236  40589.898     0.981              9

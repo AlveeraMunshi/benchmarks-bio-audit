@@ -1,0 +1,484 @@
+{
+  "version": 1,
+  "updatedAt": "2026-10-09",
+  "methodology": "Overall score is the equally weighted mean of observed benchmark scores.",
+  "benchmarks": [
+    {
+      "id": "spatialbench",
+      "label": "SpatialBench",
+      "category": "multiomics",
+      "horizon": "short",
+      "evalCount": 115,
+      "scoreScope": {
+        "label": "Verified subset",
+        "evaluationCount": 115,
+        "comparisonSet": {
+          "label": "Full benchmark",
+          "evaluationCount": 159
+        }
+      },
+      "weight": 1
+    },
+    {
+      "id": "spatialbench-long",
+      "label": "SpatialBench-Long",
+      "category": "multiomics",
+      "horizon": "long",
+      "evalCount": 24,
+      "scoreScope": {
+        "label": "Verified subset",
+        "evaluationCount": 22,
+        "comparisonSet": {
+          "label": "Full benchmark",
+          "evaluationCount": 24
+        }
+      },
+      "weight": 1
+    },
+    {
+      "id": "scbench",
+      "label": "scBench",
+      "category": "multiomics",
+      "horizon": "short",
+      "evalCount": 195,
+      "scoreScope": {
+        "label": "Full benchmark",
+        "evaluationCount": 195
+      },
+      "weight": 1
+    },
+    {
+      "id": "scbench-long",
+      "label": "scBench-Long",
+      "category": "multiomics",
+      "horizon": "long",
+      "evalCount": 21,
+      "scoreScope": {
+        "label": "Verified merged subset",
+        "evaluationCount": 22,
+        "comparisonSet": {
+          "label": "Original full release",
+          "evaluationCount": 21
+        }
+      },
+      "weight": 1
+    },
+    {
+      "id": "epibench",
+      "label": "EpiBench",
+      "category": "multiomics",
+      "horizon": "short",
+      "evalCount": 106,
+      "scoreScope": {
+        "label": "Full benchmark",
+        "evaluationCount": 106
+      },
+      "weight": 1
+    },
+    {
+      "id": "variantbench",
+      "label": "VariantBench",
+      "category": "multiomics",
+      "horizon": "short",
+      "evalCount": 118,
+      "scoreScope": {
+        "label": "Full benchmark",
+        "evaluationCount": 118
+      },
+      "weight": 1
+    },
+    {
+      "id": "metagenomics",
+      "label": "MetagenomicsBench",
+      "category": "multiomics",
+      "horizon": "short",
+      "evalCount": 100,
+      "scoreScope": {
+        "label": "Full benchmark",
+        "evaluationCount": 100
+      },
+      "weight": 1
+    },
+    {
+      "id": "txbench-ab",
+      "label": "TxBench-Antibody-Discovery",
+      "category": "therapeutics",
+      "horizon": "short",
+      "evalCount": 100,
+      "scoreScope": {
+        "label": "Full benchmark",
+        "evaluationCount": 100
+      },
+      "weight": 1
+    },
+    {
+      "id": "txbench-pp",
+      "label": "TxBench-Preclinical-Pharmacology",
+      "category": "therapeutics",
+      "horizon": "short",
+      "evalCount": 100,
+      "scoreScope": {
+        "label": "Full benchmark",
+        "evaluationCount": 100
+      },
+      "weight": 1
+    },
+    {
+      "id": "txbench-od",
+      "label": "TxBench-Oligo-Discovery",
+      "category": "therapeutics",
+      "horizon": "short",
+      "evalCount": 113,
+      "scoreScope": {
+        "label": "Full benchmark",
+        "evaluationCount": 113
+      },
+      "weight": 1
+    },
+    {
+      "id": "biosecbench-surveillance",
+      "label": "BioSecBench-Surveillance",
+      "category": "biosecurity",
+      "horizon": "short",
+      "evalCount": 102,
+      "scoreScope": {
+        "label": "Full benchmark",
+        "evaluationCount": 102
+      },
+      "weight": 1
+    },
+    {
+      "id": "biosecbench-refusal",
+      "label": "BioSecBench-Refusal",
+      "category": "biosecurity",
+      "horizon": "short",
+      "assessment": "safeguards",
+      "evalCount": 107,
+      "scoreScope": {
+        "label": "Full benchmark",
+        "evaluationCount": 107
+      },
+      "weight": 1
+    },
+    {
+      "id": "functionbench",
+      "label": "BioSecBench-Function",
+      "category": "biosecurity",
+      "horizon": "short",
+      "evalCount": 111,
+      "scoreScope": {
+        "label": "Full benchmark",
+        "evaluationCount": 111
+      },
+      "weight": 1
+    },
+    {
+      "id": "oncologybench",
+      "label": "OncologyBench",
+      "category": "applications",
+      "horizon": "long",
+      "evalCount": 25,
+      "scoreScope": {
+        "label": "Selected release (strict task and decision pass)",
+        "evaluationCount": 25
+      },
+      "weight": 1
+    }
+  ],
+  "models": [
+    {
+      "id": "claude-opus-4-7-claude-code",
+      "model": "Claude Opus 4.7",
+      "harness": "Claude Code",
+      "organization": "Anthropic",
+      "scores": {}
+    },
+    {
+      "id": "claude-opus-4-7-pi",
+      "model": "Claude Opus 4.7",
+      "harness": "Pi",
+      "organization": "Anthropic",
+      "scores": {}
+    },
+    {
+      "id": "claude-opus-4-8-claude-code",
+      "model": "Claude Opus 4.8",
+      "harness": "Claude Code",
+      "organization": "Anthropic",
+      "scores": {}
+    },
+    {
+      "id": "claude-opus-4-8-pi",
+      "model": "Claude Opus 4.8",
+      "harness": "Pi",
+      "organization": "Anthropic",
+      "scores": {}
+    },
+    {
+      "id": "claude-opus-5-claude-code",
+      "model": "Claude Opus 5",
+      "harness": "Claude Code",
+      "organization": "Anthropic",
+      "scores": {}
+    },
+    {
+      "id": "claude-opus-5-pi",
+      "model": "Claude Opus 5",
+      "harness": "Pi",
+      "organization": "Anthropic",
+      "scores": {}
+    },
+    {
+      "id": "claude-sonnet-5-claude-code",
+      "model": "Claude Sonnet 5",
+      "harness": "Claude Code",
+      "organization": "Anthropic",
+      "scores": {}
+    },
+    {
+      "id": "claude-sonnet-5-pi",
+      "model": "Claude Sonnet 5",
+      "harness": "Pi",
+      "organization": "Anthropic",
+      "scores": {}
+    },
+    {
+      "id": "deepseek-v4-1-flash-pi",
+      "model": "DeepSeek V4.1 Flash",
+      "harness": "Pi",
+      "organization": "DeepSeek",
+      "scores": {}
+    },
+    {
+      "id": "gemini-3-5-flash-pi",
+      "model": "Gemini 3.5 Flash",
+      "harness": "Pi",
+      "organization": "Google",
+      "scores": {}
+    },
+    {
+      "id": "kimi-k3-pi",
+      "model": "Kimi K3",
+      "harness": "Pi",
+      "organization": "Moonshot",
+      "scores": {}
+    },
+    {
+      "id": "gpt-5-5-codex",
+      "model": "GPT-5.5",
+      "harness": "Codex",
+      "organization": "OpenAI",
+      "scores": {}
+    },
+    {
+      "id": "gpt-5-5-pi",
+      "model": "GPT-5.5",
+      "harness": "Pi",
+      "organization": "OpenAI",
+      "scores": {}
+    },
+    {
+      "id": "gpt-5-6-luna-codex",
+      "model": "GPT-5.6 Luna",
+      "harness": "Codex",
+      "organization": "OpenAI",
+      "scores": {}
+    },
+    {
+      "id": "gpt-5-6-luna-pi",
+      "model": "GPT-5.6 Luna",
+      "harness": "Pi",
+      "organization": "OpenAI",
+      "scores": {}
+    },
+    {
+      "id": "gpt-5-6-sol-codex",
+      "model": "GPT-5.6 Sol",
+      "harness": "Codex",
+      "organization": "OpenAI",
+      "scores": {}
+    },
+    {
+      "id": "gpt-5-6-sol-pi",
+      "model": "GPT-5.6 Sol",
+      "harness": "Pi",
+      "organization": "OpenAI",
+      "scores": {}
+    },
+    {
+      "id": "gpt-5-6-terra-codex",
+      "model": "GPT-5.6 Terra",
+      "harness": "Codex",
+      "organization": "OpenAI",
+      "scores": {}
+    },
+    {
+      "id": "gpt-5-6-terra-pi",
+      "model": "GPT-5.6 Terra",
+      "harness": "Pi",
+      "organization": "OpenAI",
+      "scores": {}
+    },
+    {
+      "id": "gpt-6-astra-codex",
+      "model": "GPT-6 Astra",
+      "harness": "Codex",
+      "organization": "OpenAI",
+      "scores": {}
+    },
+    {
+      "id": "gpt-6-astra-pi",
+      "model": "GPT-6 Astra",
+      "harness": "Pi",
+      "organization": "OpenAI",
+      "scores": {}
+    },
+    {
+      "id": "grok-4-5-pi",
+      "model": "Grok 4.5",
+      "harness": "Pi",
+      "organization": "SpaceXAI",
+      "scores": {}
+    },
+    {
+      "id": "grok-4-6-grok-build",
+      "model": "Grok 4.6",
+      "harness": "Grok Build",
+      "organization": "SpaceXAI",
+      "scores": {}
+    },
+    {
+      "id": "grok-4-6-pi",
+      "model": "Grok 4.6",
+      "harness": "Pi",
+      "organization": "SpaceXAI",
+      "scores": {}
+    },
+    {
+      "id": "opus-5-5-claude-code",
+      "model": "Claude Opus 5.5",
+      "harness": "Claude Code",
+      "organization": "Anthropic",
+      "scores": {}
+    },
+    {
+      "id": "sonnet-5-5-claude-code",
+      "model": "Claude Sonnet 5.5",
+      "harness": "Claude Code",
+      "organization": "Anthropic",
+      "scores": {}
+    },
+    {
+      "id": "sonnet-5-5-pi",
+      "model": "Claude Sonnet 5.5",
+      "harness": "Pi",
+      "organization": "Anthropic",
+      "scores": {}
+    },
+    {
+      "id": "opus-5-5-pi",
+      "model": "Claude Opus 5.5",
+      "harness": "Pi",
+      "organization": "Anthropic",
+      "scores": {}
+    },
+    {
+      "id": "gpt-6-sol-pi",
+      "model": "GPT-6 Sol",
+      "harness": "Pi",
+      "organization": "OpenAI",
+      "scores": {}
+    },
+    {
+      "id": "gpt-6-sol-codex",
+      "model": "GPT-6 Sol",
+      "harness": "Codex",
+      "organization": "OpenAI",
+      "scores": {}
+    },
+    {
+      "id": "gpt-6-luna-codex",
+      "model": "GPT-6 Luna",
+      "harness": "Codex",
+      "organization": "OpenAI",
+      "scores": {}
+    },
+    {
+      "id": "grok-4-7-grok-build",
+      "model": "Grok 4.7",
+      "harness": "Grok Build",
+      "organization": "SpaceXAI",
+      "scores": {}
+    },
+    {
+      "id": "grok-4-7-pi",
+      "model": "Grok 4.7",
+      "harness": "Pi",
+      "organization": "SpaceXAI",
+      "scores": {}
+    },
+    {
+      "id": "gemini-3-7-flash-pi",
+      "model": "Gemini 3.7 Flash",
+      "harness": "Pi",
+      "organization": "Google",
+      "scores": {}
+    },
+    {
+      "id": "gemini-3-8-flash-pi",
+      "model": "Gemini 3.8 Flash",
+      "harness": "Pi",
+      "organization": "Google",
+      "scores": {}
+    },
+    {
+      "id": "gpt-6-luna-pi",
+      "model": "GPT-6 Luna",
+      "harness": "Pi",
+      "organization": "OpenAI",
+      "scores": {}
+    },
+    {
+      "id": "sonnet-4-6-claude-code",
+      "model": "Claude Sonnet 4.6",
+      "harness": "Claude Code",
+      "organization": "Anthropic",
+      "scores": {}
+    },
+    {
+      "id": "sonnet-4-6-pi",
+      "model": "Claude Sonnet 4.6",
+      "harness": "Pi",
+      "organization": "Anthropic",
+      "scores": {}
+    },
+    {
+      "id": "muse-wonder-1-0-pi",
+      "model": "Muse Wonder 1.0",
+      "harness": "Pi",
+      "organization": "Meta",
+      "scores": {}
+    },
+    {
+      "id": "muse-spark-open-pi",
+      "model": "Muse Spark Open",
+      "harness": "Pi",
+      "organization": "Meta",
+      "scores": {}
+    },
+    {
+      "id": "mistral-large-4-0-pi",
+      "model": "Mistral Large 4.0 Preview",
+      "harness": "Pi",
+      "organization": "Mistral",
+      "scores": {}
+    },
+    {
+      "id": "mercury-3-pi",
+      "model": "Mercury 3",
+      "harness": "Pi",
+      "organization": "Inception",
+      "scores": {}
+    }
+  ]
+}
