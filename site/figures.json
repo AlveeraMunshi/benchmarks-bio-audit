@@ -1,0 +1,289 @@
+{
+ "overall": [
+  {
+   "model": "Opus 5.5 (Claude Code)",
+   "pub": 37.6,
+   "exc": 56.2,
+   "fail": 29.8,
+   "rk_pub": 16,
+   "rk_exc": 1,
+   "rk_fail": 23,
+   "cov": 2.7
+  },
+  {
+   "model": "Opus 5.5 (Pi)",
+   "pub": 37.5,
+   "exc": 55.4,
+   "fail": 28.7,
+   "rk_pub": 18,
+   "rk_exc": 3,
+   "rk_fail": 24,
+   "cov": 4.4
+  },
+  {
+   "model": "Opus 5.5* LSVP (Pi)",
+   "pub": 55.3,
+   "exc": 55.6,
+   "fail": 55.3,
+   "rk_pub": 1,
+   "rk_exc": 2,
+   "rk_fail": 1,
+   "cov": 95.8
+  },
+  {
+   "model": "Opus 5.5* LSVP (CC)",
+   "pub": 55.1,
+   "exc": 55.2,
+   "fail": 55.1,
+   "rk_pub": 2,
+   "rk_exc": 4,
+   "rk_fail": 2,
+   "cov": 98.3
+  },
+  {
+   "model": "GPT-6 Astra (Pi)",
+   "pub": 48.5,
+   "exc": 48.5,
+   "fail": 46.6,
+   "rk_pub": 4,
+   "rk_exc": 6,
+   "rk_fail": 4,
+   "cov": 76.6
+  },
+  {
+   "model": "Grok 4.6 (Grok Build)",
+   "pub": 42.5,
+   "exc": 42.5,
+   "fail": 42.5,
+   "rk_pub": 11,
+   "rk_exc": 14,
+   "rk_fail": 10,
+   "cov": 100.0
+  },
+  {
+   "model": "Fable 5.1* LSVP (CC)",
+   "pub": 49.4,
+   "exc": 50.1,
+   "fail": 49.4,
+   "rk_pub": 3,
+   "rk_exc": 5,
+   "rk_fail": 3,
+   "cov": 86.4
+  },
+  {
+   "model": "Opus 5 (Pi)",
+   "pub": 46.6,
+   "exc": 47.1,
+   "fail": 44.4,
+   "rk_pub": 5,
+   "rk_exc": 7,
+   "rk_fail": 7,
+   "cov": 75.7
+  }
+ ],
+ "rules": [
+  {
+   "board": "EpiBench",
+   "rule": "refusal_is_fail",
+   "fit_exc": 33,
+   "fit_fail": 38,
+   "cells": 38
+  },
+  {
+   "board": "BioSecBench-Function",
+   "rule": "exclude_refusals",
+   "fit_exc": 38,
+   "fit_fail": 9,
+   "cells": 38
+  },
+  {
+   "board": "MetagenomicsBench",
+   "rule": "refusal_is_fail",
+   "fit_exc": 27,
+   "fit_fail": 37,
+   "cells": 37
+  },
+  {
+   "board": "scBench",
+   "rule": "refusal_is_fail",
+   "fit_exc": 33,
+   "fit_fail": 38,
+   "cells": 38
+  },
+  {
+   "board": "scBench-Long",
+   "rule": "refusal_is_fail",
+   "fit_exc": 36,
+   "fit_fail": 41,
+   "cells": 41
+  },
+  {
+   "board": "SpatialBench",
+   "rule": "refusal_is_fail",
+   "fit_exc": 36,
+   "fit_fail": 38,
+   "cells": 38
+  },
+  {
+   "board": "SpatialBench-Long",
+   "rule": "refusal_is_fail",
+   "fit_exc": 37,
+   "fit_fail": 41,
+   "cells": 41
+  },
+  {
+   "board": "BioSecBench-Surveillance",
+   "rule": "exclude_refusals",
+   "fit_exc": 38,
+   "fit_fail": 10,
+   "cells": 38
+  },
+  {
+   "board": "TxBench-Antibody",
+   "rule": "refusal_is_fail",
+   "fit_exc": 10,
+   "fit_fail": 37,
+   "cells": 37
+  },
+  {
+   "board": "TxBench-Oligo",
+   "rule": "refusal_is_fail",
+   "fit_exc": 23,
+   "fit_fail": 38,
+   "cells": 38
+  },
+  {
+   "board": "TxBench-Preclinical",
+   "rule": "refusal_is_fail",
+   "fit_exc": 33,
+   "fit_fail": 37,
+   "cells": 37
+  },
+  {
+   "board": "VariantBench",
+   "rule": "refusal_is_fail",
+   "fit_exc": 32,
+   "fit_fail": 38,
+   "cells": 38
+  }
+ ],
+ "ranks": [
+  {
+   "model": "Opus 5.5 (Pi)",
+   "score": 73.6,
+   "items": 12,
+   "shown": 1,
+   "lo": 1,
+   "hi": 7,
+   "p1": 80.8
+  },
+  {
+   "model": "Opus 5.5 (Claude Code)",
+   "score": 61.5,
+   "items": 13,
+   "shown": 2,
+   "lo": 1,
+   "hi": 27,
+   "p1": 12.6
+  },
+  {
+   "model": "Opus 5.5* LSVP (Pi)",
+   "score": 56.1,
+   "items": 110,
+   "shown": 3,
+   "lo": 2,
+   "hi": 7,
+   "p1": 2.2
+  },
+  {
+   "model": "Opus 5.5* LSVP (CC)",
+   "score": 54.2,
+   "items": 110,
+   "shown": 4,
+   "lo": 2,
+   "hi": 10,
+   "p1": 0.8
+  },
+  {
+   "model": "sonnet-5-5-claude-code",
+   "score": 53.5,
+   "items": 82,
+   "shown": 5,
+   "lo": 2,
+   "hi": 11,
+   "p1": 2.2
+  },
+  {
+   "model": "sonnet-5-5-pi",
+   "score": 51.7,
+   "items": 78,
+   "shown": 6,
+   "lo": 2,
+   "hi": 15,
+   "p1": 0.5
+  },
+  {
+   "model": "Fable 5.1* LSVP (CC)",
+   "score": 48.9,
+   "items": 111,
+   "shown": 7,
+   "lo": 4,
+   "hi": 14,
+   "p1": 0.1
+  },
+  {
+   "model": "GPT-6 Astra (Pi)",
+   "score": 48.6,
+   "items": 85,
+   "shown": 8,
+   "lo": 3,
+   "hi": 15,
+   "p1": 0.6
+  }
+ ],
+ "fidelity": [
+  {
+   "keep": 100,
+   "items": 1179,
+   "cost": 224156,
+   "rho": 1.0,
+   "top10": 10
+  },
+  {
+   "keep": 60,
+   "items": 707,
+   "cost": 119252,
+   "rho": 0.99,
+   "top10": 10
+  },
+  {
+   "keep": 40,
+   "items": 472,
+   "cost": 74228,
+   "rho": 0.985,
+   "top10": 10
+  },
+  {
+   "keep": 30,
+   "items": 354,
+   "cost": 59405,
+   "rho": 0.984,
+   "top10": 10
+  },
+  {
+   "keep": 20,
+   "items": 236,
+   "cost": 40589,
+   "rho": 0.981,
+   "top10": 9
+  }
+ ],
+ "items": {
+  "total": 1179,
+  "dead": 166,
+  "dead_cost": 50319,
+  "uninf": 390,
+  "uninf_cost": 85784,
+  "total_cost": 224157
+ }
+}
