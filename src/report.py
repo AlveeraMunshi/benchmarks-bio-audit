@@ -100,6 +100,16 @@ def main():
     say("\ndead items by board:")
     say(dead_board.sort_values("pct", ascending=False).head(6).to_string(float_format=lambda x: "%.1f" % x))
 
+    say("\n## 6. Where the never-solved items cluster")
+    prof = items_mod.dead_item_profile(df, it)
+    prof = prof[prof.n_items >= 8].sort_values("dead_pct", ascending=False)
+    prof.to_csv(OUT / "08_dead_item_profile.csv", index=False)
+    say(prof.head(8).to_string(index=False, float_format=lambda x: "%.0f" % x))
+    say("\nno dead items at all in these groups:")
+    say(prof[prof.dead == 0].head(5)[["facet", "value", "n_items"]].to_string(index=False))
+    say("=> they cluster by ASSAY, not by scientific stage, which points at a data or"
+        " grader problem in particular pipelines rather than at hard science.")
+
     (OUT / "findings.txt").write_text("\n".join(LOG))
     _figures(df, T, R, RI, OV, fid, it, bb)
     say(f"\nwrote {OUT}")

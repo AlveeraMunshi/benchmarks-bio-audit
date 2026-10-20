@@ -117,6 +117,11 @@ Independent of the rule question, and relevant to where the next $230k goes:
 - **37.7% of total spend ($87,433)** goes to items that cannot separate models.
 - Keeping the **top 30% of items by discrimination** reproduces the full leaderboard at
   Spearman **0.986**, for **$61k instead of $229k**.
+- The dead items **cluster by assay rather than by difficulty**: **12 of the 24
+  ATAC-seq items are dead**, 8 of 18 exome-sequencing items, 10 of 31 wastewater items —
+  and every therapeutics *stage* group has none at all. A failure that tracks the
+  pipeline and not the science is a pipeline bug, which makes this a concrete place to
+  start rather than a vague complaint.
 - `mobilome_mge_class_abundance_illumina_wastewater_mgx` appears twice in
   BioSecBench-Surveillance under two ids. Both dead. $2,250.
 

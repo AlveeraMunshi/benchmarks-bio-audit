@@ -77,3 +77,23 @@ variantbench              118    28 23.7              VariantBench
 scbench-long               22     5 22.7              scBench-Long
 biosecbench-surveillance   96    20 20.8  BioSecBench-Surveillance
 oncologybench              25     5 20.0             OncologyBench
+
+## 6. Where the never-solved items cluster
+      facet                              value  n_items  dead  dead_pct
+     system                            atacseq       24    12        50
+subcategory Fine-Mapping & Gene Prioritization       11     5        45
+     system                       Primary PDAC       11     5        45
+ assayGroup                   Exome sequencing       18     8        44
+   category                     Identify leads        8     3        38
+subcategory       Small-Variant Discovery & QC       16     6        38
+       task                      normalization       11     4        36
+subcategory               Genotype & Sample QC       14     5        36
+
+no dead items at all in these groups:
+   facet                                  value  n_items
+category               Characterize or quantify       10
+   stage D3 - Assay and screening-funnel design       14
+   stage D10 - Preclinical candidate de-risking       20
+   stage D1 - Target opportunity and hypothesis       13
+   stage                     Potency & Efficacy       11
+=> they cluster by ASSAY, not by scientific stage, which points at a data or grader problem in particular pipelines rather than at hard science.

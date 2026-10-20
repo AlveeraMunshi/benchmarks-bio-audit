@@ -63,7 +63,7 @@ def dead_item_profile(df, items):
     dead = items[items.dead][["bench", "eval_id"]]
     f = [c for c in df.columns if c.startswith("facet_")]
     d = df.merge(dead.assign(is_dead=True), on=["bench", "eval_id"], how="left")
-    d["is_dead"] = d.is_dead.fillna(False)
+    d["is_dead"] = d.is_dead.fillna(False).astype(bool)
     per_item = d.groupby(["bench", "eval_id"]).first().reset_index()
     out = []
     for col in f:
@@ -73,7 +73,9 @@ def dead_item_profile(df, items):
         for val, grp in per_item.dropna(subset=[col]).groupby(col):
             if len(grp) < 5:
                 continue
+            # `n_items`, not `items`: a column named `items` shadows
+            # DataFrame.items and breaks attribute access downstream.
             out.append(dict(facet=col.replace("facet_", ""), value=val,
-                            items=len(grp), dead=int(grp.is_dead.sum()),
+                            n_items=len(grp), dead=int(grp.is_dead.sum()),
                             dead_pct=100 * grp.is_dead.mean()))
     return pd.DataFrame(out).sort_values("dead_pct", ascending=False)

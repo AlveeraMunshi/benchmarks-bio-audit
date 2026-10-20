@@ -2,29 +2,29 @@
  "overall": [
   {
    "model": "Opus 5.5 (Claude Code)",
-   "pub": 37.6,
-   "exc": 56.2,
-   "fail": 29.8,
-   "rk_pub": 16,
+   "pub": 42.1,
+   "exc": 58.8,
+   "fail": 33.9,
+   "rk_pub": 22,
    "rk_exc": 1,
-   "rk_fail": 23,
+   "rk_fail": 31,
    "cov": 2.7
   },
   {
    "model": "Opus 5.5 (Pi)",
-   "pub": 37.5,
-   "exc": 55.4,
-   "fail": 28.7,
-   "rk_pub": 18,
-   "rk_exc": 3,
-   "rk_fail": 24,
+   "pub": 42.3,
+   "exc": 58.2,
+   "fail": 33.1,
+   "rk_pub": 19,
+   "rk_exc": 4,
+   "rk_fail": 32,
    "cov": 4.4
   },
   {
    "model": "Opus 5.5* LSVP (Pi)",
-   "pub": 55.3,
-   "exc": 55.6,
-   "fail": 55.3,
+   "pub": 58.1,
+   "exc": 58.5,
+   "fail": 58.1,
    "rk_pub": 1,
    "rk_exc": 2,
    "rk_fail": 1,
@@ -32,139 +32,182 @@
   },
   {
    "model": "Opus 5.5* LSVP (CC)",
-   "pub": 55.1,
-   "exc": 55.2,
-   "fail": 55.1,
+   "pub": 58.1,
+   "exc": 58.2,
+   "fail": 58.1,
    "rk_pub": 2,
-   "rk_exc": 4,
+   "rk_exc": 3,
    "rk_fail": 2,
    "cov": 98.3
   },
   {
-   "model": "GPT-6 Astra (Pi)",
-   "pub": 48.5,
-   "exc": 48.5,
-   "fail": 46.6,
-   "rk_pub": 4,
-   "rk_exc": 6,
+   "model": "Sonnet 5.5 (Pi)",
+   "pub": 54.2,
+   "exc": 55.2,
+   "fail": 52.5,
+   "rk_pub": 3,
+   "rk_exc": 5,
    "rk_fail": 4,
+   "cov": 70.3
+  },
+  {
+   "model": "GPT-6 Astra (Pi)",
+   "pub": 51.3,
+   "exc": 51.3,
+   "fail": 49.3,
+   "rk_pub": 7,
+   "rk_exc": 9,
+   "rk_fail": 6,
    "cov": 76.6
   },
   {
    "model": "Grok 4.6 (Grok Build)",
-   "pub": 42.5,
-   "exc": 42.5,
-   "fail": 42.5,
-   "rk_pub": 11,
-   "rk_exc": 14,
-   "rk_fail": 10,
+   "pub": 45.9,
+   "exc": 45.9,
+   "fail": 45.9,
+   "rk_pub": 15,
+   "rk_exc": 18,
+   "rk_fail": 14,
    "cov": 100.0
   },
   {
-   "model": "Fable 5.1* LSVP (CC)",
-   "pub": 49.4,
-   "exc": 50.1,
-   "fail": 49.4,
-   "rk_pub": 3,
-   "rk_exc": 5,
-   "rk_fail": 3,
-   "cov": 86.4
+   "model": "Opus 5 (Pi)",
+   "pub": 50.0,
+   "exc": 50.4,
+   "fail": 47.7,
+   "rk_pub": 8,
+   "rk_exc": 10,
+   "rk_fail": 10,
+   "cov": 75.7
   },
   {
-   "model": "Opus 5 (Pi)",
-   "pub": 46.6,
-   "exc": 47.1,
-   "fail": 44.4,
+   "model": "Fable 5.1* LSVP (CC)",
+   "pub": 53.2,
+   "exc": 54.0,
+   "fail": 53.2,
    "rk_pub": 5,
    "rk_exc": 7,
-   "rk_fail": 7,
-   "cov": 75.7
+   "rk_fail": 3,
+   "cov": 86.4
   }
  ],
  "rules": [
   {
-   "board": "EpiBench",
-   "rule": "refusal_is_fail",
-   "fit_exc": 33,
-   "fit_fail": 38,
-   "cells": 38
-  },
-  {
    "board": "BioSecBench-Function",
-   "rule": "exclude_refusals",
+   "rule": "exclude",
+   "documented": "exclude",
+   "contradicts": false,
    "fit_exc": 38,
    "fit_fail": 9,
    "cells": 38
   },
   {
-   "board": "MetagenomicsBench",
-   "rule": "refusal_is_fail",
-   "fit_exc": 27,
-   "fit_fail": 37,
-   "cells": 37
+   "board": "BioSecBench-Surveillance",
+   "rule": "exclude",
+   "documented": "exclude",
+   "contradicts": false,
+   "fit_exc": 38,
+   "fit_fail": 10,
+   "cells": 38
   },
   {
-   "board": "scBench",
-   "rule": "refusal_is_fail",
+   "board": "EpiBench",
+   "rule": "fail",
+   "documented": "exclude",
+   "contradicts": true,
    "fit_exc": 33,
    "fit_fail": 38,
    "cells": 38
   },
   {
-   "board": "scBench-Long",
-   "rule": "refusal_is_fail",
-   "fit_exc": 36,
-   "fit_fail": 41,
-   "cells": 41
+   "board": "MetagenomicsBench",
+   "rule": "fail",
+   "documented": "fail",
+   "contradicts": false,
+   "fit_exc": 27,
+   "fit_fail": 37,
+   "cells": 37
+  },
+  {
+   "board": "OncologyBench",
+   "rule": "fail",
+   "documented": "fail",
+   "contradicts": false,
+   "fit_exc": 27,
+   "fit_fail": 35,
+   "cells": 35
   },
   {
    "board": "SpatialBench",
-   "rule": "refusal_is_fail",
+   "rule": "fail",
+   "documented": "exclude",
+   "contradicts": true,
    "fit_exc": 36,
    "fit_fail": 38,
    "cells": 38
   },
   {
    "board": "SpatialBench-Long",
-   "rule": "refusal_is_fail",
+   "rule": "fail",
+   "documented": "exclude",
+   "contradicts": true,
    "fit_exc": 37,
    "fit_fail": 41,
    "cells": 41
   },
   {
-   "board": "BioSecBench-Surveillance",
-   "rule": "exclude_refusals",
-   "fit_exc": 38,
-   "fit_fail": 10,
-   "cells": 38
-  },
-  {
    "board": "TxBench-Antibody",
-   "rule": "refusal_is_fail",
+   "rule": "fail",
+   "documented": "exclude",
+   "contradicts": true,
    "fit_exc": 10,
    "fit_fail": 37,
    "cells": 37
   },
   {
    "board": "TxBench-Oligo",
-   "rule": "refusal_is_fail",
+   "rule": "fail",
+   "documented": "exclude",
+   "contradicts": true,
    "fit_exc": 23,
    "fit_fail": 38,
    "cells": 38
   },
   {
    "board": "TxBench-Preclinical",
-   "rule": "refusal_is_fail",
+   "rule": "fail",
+   "documented": "exclude",
+   "contradicts": true,
    "fit_exc": 33,
    "fit_fail": 37,
    "cells": 37
   },
   {
    "board": "VariantBench",
-   "rule": "refusal_is_fail",
+   "rule": "fail",
+   "documented": "exclude",
+   "contradicts": true,
    "fit_exc": 32,
    "fit_fail": 38,
    "cells": 38
+  },
+  {
+   "board": "scBench",
+   "rule": "fail",
+   "documented": "exclude",
+   "contradicts": true,
+   "fit_exc": 33,
+   "fit_fail": 38,
+   "cells": 38
+  },
+  {
+   "board": "scBench-Long",
+   "rule": "fail",
+   "documented": "exclude",
+   "contradicts": true,
+   "fit_exc": 36,
+   "fit_fail": 41,
+   "cells": 41
   }
  ],
  "ranks": [
@@ -175,7 +218,7 @@
    "shown": 1,
    "lo": 1,
    "hi": 7,
-   "p1": 80.8
+   "p1": 80.5
   },
   {
    "model": "Opus 5.5 (Claude Code)",
@@ -184,7 +227,7 @@
    "shown": 2,
    "lo": 1,
    "hi": 27,
-   "p1": 12.6
+   "p1": 13.4
   },
   {
    "model": "Opus 5.5* LSVP (Pi)",
@@ -193,7 +236,7 @@
    "shown": 3,
    "lo": 2,
    "hi": 7,
-   "p1": 2.2
+   "p1": 2.1
   },
   {
    "model": "Opus 5.5* LSVP (CC)",
@@ -211,10 +254,10 @@
    "shown": 5,
    "lo": 2,
    "hi": 11,
-   "p1": 2.2
+   "p1": 2.0
   },
   {
-   "model": "sonnet-5-5-pi",
+   "model": "Sonnet 5.5 (Pi)",
    "score": 51.7,
    "items": 78,
    "shown": 6,
@@ -228,7 +271,7 @@
    "items": 111,
    "shown": 7,
    "lo": 4,
-   "hi": 14,
+   "hi": 15,
    "p1": 0.1
   },
   {
@@ -236,54 +279,146 @@
    "score": 48.6,
    "items": 85,
    "shown": 8,
-   "lo": 3,
+   "lo": 2,
    "hi": 15,
    "p1": 0.6
+  }
+ ],
+ "boardsize": [
+  {
+   "board": "BioSecBench-Surveillance",
+   "items": 102,
+   "width": 15.0
+  },
+  {
+   "board": "EpiBench",
+   "items": 106,
+   "width": 17.0
+  },
+  {
+   "board": "BioSecBench-Function",
+   "items": 111,
+   "width": 13.0
+  },
+  {
+   "board": "MetagenomicsBench",
+   "items": 100,
+   "width": 7.024999999999999
+  },
+  {
+   "board": "OncologyBench",
+   "items": 25,
+   "width": 21.0
+  },
+  {
+   "board": "scBench",
+   "items": 195,
+   "width": 11.5125
+  },
+  {
+   "board": "scBench-Long",
+   "items": 22,
+   "width": 20.0
+  },
+  {
+   "board": "SpatialBench",
+   "items": 115,
+   "width": 19.5
+  },
+  {
+   "board": "SpatialBench-Long",
+   "items": 21,
+   "width": 23.0
+  },
+  {
+   "board": "TxBench-Antibody",
+   "items": 100,
+   "width": 12.0
+  },
+  {
+   "board": "TxBench-Oligo",
+   "items": 113,
+   "width": 13.0
+  },
+  {
+   "board": "TxBench-Preclinical",
+   "items": 100,
+   "width": 12.0
+  },
+  {
+   "board": "VariantBench",
+   "items": 118,
+   "width": 10.0
   }
  ],
  "fidelity": [
   {
    "keep": 100,
-   "items": 1179,
-   "cost": 224156,
+   "items": 1204,
+   "cost": 228695,
    "rho": 1.0,
    "top10": 10
   },
   {
    "keep": 60,
-   "items": 707,
-   "cost": 119252,
-   "rho": 0.99,
+   "items": 722,
+   "cost": 121897,
+   "rho": 0.994,
    "top10": 10
   },
   {
    "keep": 40,
-   "items": 472,
-   "cost": 74228,
-   "rho": 0.985,
-   "top10": 10
+   "items": 482,
+   "cost": 76231,
+   "rho": 0.989,
+   "top10": 9
   },
   {
    "keep": 30,
-   "items": 354,
-   "cost": 59405,
-   "rho": 0.984,
-   "top10": 10
+   "items": 361,
+   "cost": 61011,
+   "rho": 0.986,
+   "top10": 9
   },
   {
    "keep": 20,
-   "items": 236,
-   "cost": 40589,
+   "items": 241,
+   "cost": 41508,
    "rho": 0.981,
-   "top10": 9
+   "top10": 10
   }
  ],
  "items": {
-  "total": 1179,
-  "dead": 166,
-  "dead_cost": 50319,
-  "uninf": 390,
-  "uninf_cost": 85784,
-  "total_cost": 224157
+  "total": 1204,
+  "dead": 171,
+  "dead_cost": 51220,
+  "zero": 121,
+  "uninf": 400,
+  "uninf_cost": 87432,
+  "total_cost": 231697
+ },
+ "scale": {
+  "boards": 13,
+  "evals": 1228,
+  "cells": 46414,
+  "runs": 147182,
+  "refusals": 8452,
+  "spend": 231697,
+  "tokens_b": 300
+ },
+ "bias": {
+  "n_cells": 65,
+  "mean_gap": -0.579,
+  "ci_lo": -1.933,
+  "ci_hi": 0.728,
+  "median_gap": 0.399,
+  "share_positive": 0.538,
+  "wilcoxon_p": 0.613,
+  "max_plausible_inflation": 0.728
+ },
+ "overall_interval": {
+  "median_width": 4.0,
+  "board_median_width": 13.0,
+  "cov_corr": 0.003
  }
 }

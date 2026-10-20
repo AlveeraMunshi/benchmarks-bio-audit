@@ -100,6 +100,12 @@ intersection is 7% of BioSecBench-Function and 2% of TxBench-Oligo.
 - **$87,433 (37.7%)** goes to items that cannot separate models.
 - Keeping only the **top 30% of items by discrimination** reproduces the full leaderboard
   at Spearman **0.986**, for **$61k instead of $229k**.
+- **They cluster by assay, not by difficulty**, which is the part that makes them
+  actionable: **12 of the 24 ATAC-seq items (50%) are dead**, as are 8 of 18 exome-
+  sequencing items and 10 of 31 wastewater items — while every therapeutics *stage*
+  group (target hypothesis, assay design, preclinical de-risking, potency) has **zero**.
+  A failure that tracks the pipeline rather than the science is a pipeline bug. The
+  24 ATAC-seq items are where I would start.
 - `mobilome_mge_class_abundance_illumina_wastewater_mgx` appears twice in
   BioSecBench-Surveillance under two ids. Both dead. $2,250.
 

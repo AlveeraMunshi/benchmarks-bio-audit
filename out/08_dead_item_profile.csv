@@ -1,0 +1,135 @@
+facet,value,n_items,dead,dead_pct
+system,atacseq,24,12,50.0
+subcategory,Fine-Mapping & Gene Prioritization,11,5,45.45454545454545
+system,Primary PDAC,11,5,45.45454545454545
+assayGroup,Exome sequencing,18,8,44.44444444444444
+category,Identify leads,8,3,37.5
+subcategory,Small-Variant Discovery & QC,16,6,37.5
+task,normalization,11,4,36.36363636363637
+subcategory,Genotype & Sample QC,14,5,35.714285714285715
+platform,Other,33,11,33.33333333333333
+diseaseCategory,rare disease,9,3,33.33333333333333
+assayGroup,Other,36,12,33.33333333333333
+sampleType,Wastewater,31,10,32.25806451612903
+assay,differential_expression,53,17,32.075471698113205
+system,chipseq,10,3,30.0
+platform,MISSION BIO,38,11,28.947368421052634
+mainTaskTheme,mechanism_of_action,14,4,28.57142857142857
+broadCategory,Statistical & Population Genomics,40,11,27.500000000000004
+nucleicAcid,RNA,33,9,27.27272727272727
+taskCategory,AMR characterization,15,4,26.666666666666668
+diseaseCategory,no specific disease,83,21,25.301204819277107
+broadCategory,Variant Discovery & QC,48,12,25.0
+functionalDomain,Host associations,20,5,25.0
+biologicalQuestion,Structure → function,16,4,25.0
+organismClass,Other,8,2,25.0
+taskCategory,Source tracking,12,3,25.0
+taskCategory,Taxonomic classification,16,4,25.0
+system,methylseq,25,6,24.0
+diseaseCategory,chronic disease,17,4,23.52941176470588
+assay,qc,47,11,23.404255319148938
+sequenceTechnology,Short,80,18,22.5
+sequencingType,Shotgun,85,19,22.35294117647059
+subcategory,"Family, Inheritance & De Novo Variation",9,2,22.22222222222222
+dataModality,Multimodal / spatial,18,4,22.22222222222222
+assay,Protein & splice-isoform assays,9,2,22.22222222222222
+system,cuttag_cutrun,47,10,21.27659574468085
+biologicalSystem,Human gut,48,10,20.833333333333336
+platform,Illumina,58,12,20.689655172413794
+dataSource,Real,97,20,20.618556701030926
+taskCategory,Anomaly detection,10,2,20.0
+threatAxis,Other,10,2,20.0
+dataModality,Long-read,10,2,20.0
+task,differential_expression,88,17,19.318181818181817
+biologicalSystem,Mouse gut,16,3,18.75
+subcategory,Association & Molecular QTLs,11,2,18.181818181818183
+threatAxis,Data QC / methodology,22,4,18.181818181818183
+functionalDomain,Community structure,46,8,17.391304347826086
+taskCategory,Variant detection,23,4,17.391304347826086
+assayGroup,Long-read WGS,29,5,17.24137931034483
+nucleicAcid,DNA,64,11,17.1875
+broadCategory,Personal & Clinical Genomics,30,5,16.666666666666664
+taskCategory,Toxin and virulence characterization,12,2,16.666666666666664
+dataModality,Shotgun,48,8,16.666666666666664
+platform,ILLUMINA,25,4,16.0
+dataModality,16S / amplicon,13,2,15.384615384615385
+system,S8_developability_safety,20,3,15.0
+system,S6_moa_pharmacodynamics,21,3,14.285714285714285
+task,dimensionality_reduction,15,2,13.333333333333334
+platform,BD RHAPSODY,30,4,13.333333333333334
+sequenceTechnology,Long,15,2,13.333333333333334
+platform,PacBio,23,3,13.043478260869565
+platform,CHROMIUM,40,5,12.5
+system,S7_compound_target_engagement,8,1,12.5
+subcategory,Genetic Architecture & Prediction,8,1,12.5
+system,S2_screening_hit_confirmation,8,1,12.5
+task,qc,34,4,11.76470588235294
+sampleType,Isolate,34,4,11.76470588235294
+stage,Safety & Toxicity,26,3,11.538461538461538
+functionalDomain,Function & metabolism,18,2,11.11111111111111
+organismClass,Toxin,9,1,11.11111111111111
+biologicalSystem,"Human, other site",21,2,9.523809523809524
+platform,PARSE BIO,32,3,9.375
+category,Assess safety,32,3,9.375
+threatAxis,Immune escape,22,2,9.090909090909092
+sampleType,Clinical,23,2,8.695652173913043
+assayGroup,Short-read WGS,35,3,8.571428571428571
+taskCategory,Genetic engineering characterization,12,1,8.333333333333332
+platform,ATLASXOMICS DBIT-SEQ,25,2,8.0
+threatAxis,Virulence / pathogenicity,13,1,7.6923076923076925
+assay,"PK, biodistribution & toxicology",41,3,7.317073170731707
+stage,D8 - Cellular pharmacology and mechanism of action,14,1,7.142857142857142
+organismClass,Viral,56,4,7.142857142857142
+sequencingType,Targeted,15,1,6.666666666666667
+stage,PK/PD & Biodistribution,15,1,6.666666666666667
+stage,Sequence & Physchem Design,16,1,6.25
+system,S9_translational_efficacy,17,1,5.88235294117647
+biologicalQuestion,Biophysical assay → function,87,5,5.747126436781609
+assay,Off-target & mechanism profiling,35,2,5.714285714285714
+organismClass,Bacterial,35,2,5.714285714285714
+category,Assess target pharmacology,19,1,5.263157894736842
+stage,Off-target & Cytotoxicity,20,1,5.0
+assay,Functional and imaging assays,21,1,4.761904761904762
+task,cell_typing,113,5,4.424778761061947
+platform,VIZGEN MERFISH,23,1,4.3478260869565215
+platform,10X VISIUM,24,1,4.166666666666666
+category,"Rank, select, or triage",26,1,3.8461538461538463
+platform,CS GENETICS,29,1,3.4482758620689653
+category,Characterize or quantify,10,0,0.0
+stage,D3 - Assay and screening-funnel design,14,0,0.0
+stage,D10 - Preclinical candidate de-risking,20,0,0.0
+stage,D1 - Target opportunity and hypothesis,13,0,0.0
+stage,Potency & Efficacy,11,0,0.0
+stage,Chemistry Evaluation,10,0,0.0
+category,Assess specificity,18,0,0.0
+category,Characterize PK/PD,14,0,0.0
+category,Design or optimize,15,0,0.0
+category,Compare or classify,13,0,0.0
+category,Diagnose or troubleshoot,10,0,0.0
+biologicalSystem,Environmental,9,0,0.0
+category,Infer mechanism,13,0,0.0
+category,Integrate a discovery gate,13,0,0.0
+category,Integrate a program decision,12,0,0.0
+category,Run supporting analysis,10,0,0.0
+task,spatial_analysis,24,0,0.0
+task,clustering,22,0,0.0
+system,S5_causal_target_validation,12,0,0.0
+biologicalQuestion,Sequence → function,8,0,0.0
+assay,Binding kinetics and avidity,11,0,0.0
+assay,Assay QC and statistical inference,23,0,0.0
+platform,TAKARA SEEKER,21,0,0.0
+platform,10X XENIUM,22,0,0.0
+functionalDomain,Longitudinal,11,0,0.0
+system,S3_drug_response_pharmacogenomics,10,0,0.0
+diseaseCategory,cancer,9,0,0.0
+subcategory,"SV, CNV & Repeat Discovery & QC",12,0,0.0
+dataModality,Other,8,0,0.0
+assay,Selection and screening data,8,0,0.0
+threatAxis,Drug resistance,21,0,0.0
+threatAxis,Environmental persistence / fitness,10,0,0.0
+assay,Cytotoxicity & dose-response,10,0,0.0
+assay,Duplex biophysics & binding,12,0,0.0
+threatAxis,Transmissibility,13,0,0.0
+assay,Experimental design and allocation,8,0,0.0
+assay,Expression and single-cell data,21,0,0.0
+stage,"D6 - Binding, kinetics, avidity, and specificity",13,0,0.0
