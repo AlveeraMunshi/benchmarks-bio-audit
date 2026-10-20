@@ -145,4 +145,13 @@ pytest tests/ -v          # the scoring contract: 4 pass, 2 fail
 | `src/report.py` | runs everything, writes `out/` |
 | `tests/` | the scoring contract |
 
+## Deliverables
+
+| | |
+|---|---|
+| **Report page** | https://claude.ai/artifact/5fg5zn61V7yTgcVsFTSDcF — the finding with the four charts |
+| **Memo** | [`MEMO.md`](MEMO.md) — two pages, the register of an internal eng note |
+| **Proposed change** | [`src/policy.py`](src/policy.py) + [`tests/`](tests/) — declared rules, coverage-gated ranking, and the contract that catches the drift |
+| **Pipeline** | `src/fetch.py` -> `src/report.py` -> `out/` |
+
 *Audit by Alveera Munshi, October 2026. Data as published 2026-10-20.*
