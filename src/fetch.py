@@ -11,7 +11,8 @@ BASE = "https://benchmarks.bio"
 CAPABILITY = ["spatialbench", "spatialbench-long", "scbench", "scbench-long",
               "epibench", "variantbench", "metagenomics", "txbench-pp",
               "txbench-od", "txbench-ad", "surveillancebench", "functionbench"]
-OTHER = {"v1/refusalbench.json": "v1/refusalbench.json",
+OTHER = {"oncologybench/index.json": "oncologybench.json",
+         "v1/refusalbench.json": "v1/refusalbench.json",
          "aggregate-leaderboard.json": "aggregate-leaderboard.json",
          "../results/versions.json": "results/versions.json",
          "../results/v1/latest.json": "results/v1/latest.json"}

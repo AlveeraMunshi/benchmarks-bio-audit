@@ -1,69 +1,79 @@
 ## 0. Reproduction
-reproduced 459/459 published board scores (max error 0.0050 pts)
-runs=144,557  refusals=8,364 (5.79%)  spend=$226,970  tokens=299B
+board scores reproduced : 494/494  (max err 0.0050 pts)
+Overall reproduced      : 38/38  (max err 0.0035 pts)
+boards=13  evals=1228  cells=46,414  runs=147,182  refusals=8,452 (5.74%)  spend=$231,697
 
-## 1. The scoring rule is not the documented one on 10 of 12 boards
-            bench  exclude_refusals  refusal_is_fail  cells      rule_in_use
-         epibench                33               38     38  refusal_is_fail
-    functionbench                38                9     38 exclude_refusals
-     metagenomics                27               37     37  refusal_is_fail
-          scbench                33               38     38  refusal_is_fail
-     scbench-long                36               41     41  refusal_is_fail
-     spatialbench                36               38     38  refusal_is_fail
-spatialbench-long                37               41     41  refusal_is_fail
-surveillancebench                38               10     38 exclude_refusals
-       txbench-ad                10               37     37  refusal_is_fail
-       txbench-od                23               38     38  refusal_is_fail
-       txbench-pp                33               37     37  refusal_is_fail
-     variantbench                32               38     38  refusal_is_fail
+## 1. The scoring rule is not the documented one on 9 of 13 boards
+                   board                    bench  cells  fit_exclude  fit_fail rule_in_use documented  contradicts
+    BioSecBench-Function            functionbench     38           38         9     exclude    exclude        False
+BioSecBench-Surveillance biosecbench-surveillance     38           38        10     exclude    exclude        False
+                EpiBench                 epibench     38           33        38        fail    exclude         True
+       MetagenomicsBench             metagenomics     37           27        37        fail       fail        False
+           OncologyBench            oncologybench     35           27        35        fail       fail        False
+            SpatialBench             spatialbench     38           36        38        fail    exclude         True
+       SpatialBench-Long        spatialbench-long     41           37        41        fail    exclude         True
+        TxBench-Antibody               txbench-ab     37           10        37        fail    exclude         True
+           TxBench-Oligo               txbench-od     38           23        38        fail    exclude         True
+     TxBench-Preclinical               txbench-pp     37           33        37        fail    exclude         True
+            VariantBench             variantbench     38           32        38        fail    exclude         True
+                 scBench                  scbench     38           33        38        fail    exclude         True
+            scBench-Long             scbench-long     41           36        41        fail    exclude         True
 
-biggest rank move when the documented rule is applied uniformly:
-                      as_published  all_exclude  min_coverage  rank_published  rank_all_exclude  move
-mid                                                                                                  
-opus-5-5-claude-code          37.6         56.2           2.7            16.0               1.0  15.0
-opus-5-5-pi                   37.5         55.4           4.4            18.0               3.0  15.0
-grok-4-6-grok-build           42.5         42.5         100.0            11.0              14.0  -3.0
-gpt-5-6-sol-pi                41.3         41.4          72.5            13.0              16.0  -3.0
+boards contradicting their own methodology text: 9/13
 
-## 2. On the two refusal-excluding boards, rank rests on a handful of items
+## 2. What the inconsistency does to Overall
+                      as_published  all_exclude  all_fail  min_coverage  rk_as_published  rk_all_exclude  move
+mid                                                                                                           
+opus-5-5-claude-code          42.1         58.8      33.9           2.7             22.0             1.0  21.0
+opus-5-5-pi                   42.3         58.2      33.1           4.4             19.0             4.0  15.0
+grok-4-6-grok-build           45.9         45.9      45.9         100.0             15.0            18.0  -3.0
+grok-4-6-pi                   47.4         47.4      47.2          98.2             12.0            15.0  -3.0
+gpt-6-astra-codex             49.2         49.3      47.7          79.3             11.0            13.0  -2.0
 
-functionbench:
-                      mid  score  items_scored  shown_rank  rank_lo  rank_hi  p_rank1
-              opus-5-5-pi   73.6            12         1.0      1.0      7.0     80.8
-     opus-5-5-claude-code   61.5            13         2.0      1.0     27.0     12.6
-         opus-5-5-lsvp-pi   56.1           110         3.0      2.0      7.0      2.2
-opus-5-5-lsvp-claude-code   54.2           110         4.0      2.0     10.0      0.8
-   sonnet-5-5-claude-code   53.5            82         5.0      2.0     11.0      2.2
-            sonnet-5-5-pi   51.7            78         6.0      2.0     15.0      0.5
+## 3. Is exclusion dropping the harder items? (bounded, not just tested)
+cells=65  mean gap=-0.58 pts  95% CI [-1.93, +0.73]  Wilcoxon p=0.613
+=> any difficulty-selection effect is bounded under ~1 pt of item difficulty; the point estimates are close to right and the fix belongs elsewhere.
 
-surveillancebench:
-                        mid  score  items_scored  shown_rank  rank_lo  rank_hi  p_rank1
-           opus-5-5-lsvp-pi   60.8           102         1.0      1.0      4.0     58.3
-       opus-5-5-claude-code   58.5            43         2.0      1.0     15.0     27.4
-  opus-5-5-lsvp-claude-code   57.8           102         3.0      2.0      7.0      2.2
-                opus-5-5-pi   55.8            43         4.0      1.0     22.0     10.6
-sonnet-5-5-lsvp-claude-code   54.6           102         5.0      2.0     12.0      0.2
-         sonnet-5-5-lsvp-pi   54.6           102         6.0      2.0     13.0      0.3
+## 4. What a rank is actually worth
+                          models  items  min_cov  med_width  max_width                     board
+bench                                                                                           
+spatialbench-long             41     21     66.7       23.0       38.0         SpatialBench-Long
+oncologybench                 35     25     56.0       21.0       27.0             OncologyBench
+scbench-long                  41     22     22.7       20.0       39.0              scBench-Long
+spatialbench                  38    115     99.1       19.5       24.0              SpatialBench
+epibench                      38    106     96.2       17.0       22.0                  EpiBench
+biosecbench-surveillance      38    102     42.2       15.0       21.0  BioSecBench-Surveillance
+functionbench                 38    111     10.8       13.0       26.0      BioSecBench-Function
+txbench-od                    38    113      2.7       13.0       37.0             TxBench-Oligo
+txbench-ab                    37    100     16.0       12.0       28.0          TxBench-Antibody
+txbench-pp                    37    100     44.0       12.0       17.0       TxBench-Preclinical
+scbench                       38    195     94.9       11.5       18.0                   scBench
+variantbench                  38    118     86.4       10.0       14.0              VariantBench
+metagenomics                  37    100     65.0        7.0       11.0         MetagenomicsBench
 
-scbench:
-                      mid  score  items_scored  shown_rank  rank_lo  rank_hi  p_rank1
-           gpt-6-astra-pi   63.9           195         1.0      1.0      8.0     35.8
-        gpt-6-1-sol-codex   63.6           195         2.0      1.0      9.0     27.2
-        gpt-6-astra-codex   63.4           195         3.0      1.0      9.0      9.2
-           gpt-6-1-sol-pi   62.9           195         4.0      1.0     12.0      6.2
-         opus-5-5-lsvp-pi   61.9           195         5.0      1.0     14.0     11.0
-opus-5-5-lsvp-claude-code   61.5           195         6.0      1.0     13.0      3.5
+median 95% rank interval across all 494 board rows: 13 places
+Spearman(coverage, interval width) = 0.003  -> width tracks BOARD SIZE, not refusals
+Overall board, by contrast, is well identified: median interval 4 places (it pools 1,228 items)
 
-## 3. Item information and what the suite spends on items that move nothing
-items analysed: 1179
-  never solved by any model :  166 (14.1%)  $50,319
-  solved by nearly all      :   35 (3.0%)  $1,710
-  uninformative overall     :  390 (33.1%)  $85,785 = 37.8% of spend
+## 5. What the suite spends on items that move nothing
+items analysed            1204
+  never solved by anyone   171 (14.2%)   $51,221
+  exactly zero passes      121           $38,686
+  uninformative overall    400 (33.2%)   $87,433 = 37.7% of spend
 
-keeping only the most discriminating items:
  keep_frac  n_items       cost  spearman  top10_overlap
-     1.000     1179 224156.584     1.000             10
-     0.600      707 119252.600     0.990             10
-     0.400      472  74228.962     0.985             10
-     0.300      354  59405.382     0.984             10
-     0.200      236  40589.898     0.981              9
+     1.000     1204 228695.084     1.000             10
+     0.600      722 121897.793     0.994             10
+     0.400      482  76231.485     0.989              9
+     0.300      361  61011.557     0.986              9
+     0.200      241  41508.344     0.981             10
+
+dead items by board:
+                            n  dead  pct                     board
+bench                                                             
+spatialbench-long          21     8 38.1         SpatialBench-Long
+epibench                  106    31 29.2                  EpiBench
+variantbench              118    28 23.7              VariantBench
+scbench-long               22     5 22.7              scBench-Long
+biosecbench-surveillance   96    20 20.8  BioSecBench-Surveillance
+oncologybench              25     5 20.0             OncologyBench

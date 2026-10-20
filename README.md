@@ -3,73 +3,105 @@
 An independent, reproducible audit of the public result data behind
 [benchmarks.bio](https://benchmarks.bio), LatchBio's agentic-biology benchmark suite.
 
-Everything here comes from published endpoints (`/data/v1/<bench>.json`,
-`/results/v1/latest.json`). Nothing is scraped from the rendered page, and no model
-was re-run — every number below is arithmetic on LatchBio's own published counts.
+Everything here comes from published endpoints (`/data/v1/<board>.json`,
+`/data/oncologybench/index.json`, `/results/v1/latest.json`). Nothing is scraped from
+the rendered page and no model was re-run — every number below is arithmetic on
+LatchBio's own published counts.
 
-**The data:** 12 capability boards · 1,203 evaluations · 38 model×harness rows ·
-45,539 model×evaluation cells · **144,557 graded runs** · 299B tokens ·
-**$226,970** of inference.
+**The data:** 13 capability boards · 1,228 evaluations · 46,414 model×evaluation cells ·
+**147,182 graded runs** · 300B tokens · **$231,697** of inference.
 
-**Fidelity:** this pipeline reproduces **459 of 459** published board scores to within
-**0.005 points**. That is the licence for everything that follows.
+**Fidelity:** this pipeline reproduces **494 of 494** published board scores (max error
+0.005 pts) **and all 38 Overall scores** (max error 0.004 pts). That is the licence for
+everything that follows.
 
 ---
 
-## The finding
+## Finding 1 — Overall averages two different scoring rules
 
-**The Overall score is the mean of twelve boards that do not price a refusal the same
-way.**
+Eleven boards score a refused attempt as a **failure**. Two — BioSecBench-Function and
+BioSecBench-Surveillance — **drop it from the denominator**. I recovered this by fitting
+both rules to all 494 published cells: the biosecurity boards match *exclude* 38/38 and
+*fail* 9–10/38; every other board matches *fail* exactly.
 
-Ten boards score a refused attempt as a failure. Two — BioSecBench-Function and
-BioSecBench-Surveillance — drop it from the denominator entirely. I recovered this by
-fitting both rules to all 459 published cells: the biosecurity boards match *exclude*
-38/38 and *fail* 9/38; every other board matches *fail* exactly.
+The Overall score is an evaluation-count-weighted mean of those thirteen boards. So the
+same behaviour is free on two boards and fatal on eleven, and both are averaged into one
+number.
 
-So the same behaviour is free on two boards and fatal on ten, and the twelve are then
-averaged into one headline number.
-
-**It is not documented.** Eleven of the twelve boards carry identical boilerplate
+**It is not documented.** Eleven of the thirteen boards carry identical boilerplate
 saying *"Refusals are excluded from the denominator"*, which is true of two of them.
-MetagenomicsBench is the exception and says what it actually does — *"Refusals and
-timeouts both count as failures and stay in the denominator"* — which is good
-evidence the rule is deliberate and the text on the other **9 boards is stale**.
+**MetagenomicsBench and OncologyBench are the exceptions** and describe what they
+actually do — Metagenomics: *"Refusals and timeouts both count as failures and stay in
+the denominator"*; Oncology: *"Refusals and the four timed-out slots remain in the
+denominator"*. Two boards getting it right is good evidence the rule is deliberate and
+the prose on the other **9 of 13** is stale.
 
-**It decides the top of the leaderboard.** Apply the documented rule uniformly and
-Claude Opus 5.5 moves from **16th to 1st**, on a minimum per-board coverage of
-**2.7%**. Apply refusal-as-failure uniformly and the current top is unchanged. The
-number published today is neither.
+**It decides the top of the leaderboard.**
 
-| | as published (mixed) | all `exclude` | all `fail` |
-|---|---|---|---|
-| Opus 5.5 (Claude Code) | 37.6 — rank 16 | **56.2 — rank 1** | 29.8 — rank 23 |
-| Opus 5.5* LSVP (Pi) | 55.3 — rank 1 | 55.6 — rank 2 | 55.3 — rank 1 |
+| | as published | all *exclude* | all *fail* | min. coverage |
+|---|---|---|---|---|
+| Opus 5.5 (Claude Code) | 42.1 — rank **22** | 58.8 — rank **1** | 33.9 | **2.7%** |
+| Opus 5.5 (Pi) | 42.3 — rank 19 | 58.2 — rank 4 | 33.1 | 4.4% |
+| Opus 5.5* LSVP (Pi) | 58.1 — rank **1** | 58.5 — rank 2 | 58.1 | 95.8% |
+| Opus 5.5* LSVP (CC) | 58.1 — rank 2 | 58.2 — rank 3 | 58.1 | 98.3% |
 
-`*` LSVP is Anthropic's safety-filter-exempt variant, which refuses far less. The
-starred and unstarred runs of the same model are the control: the starred one scores
-~55 under **every** rule, because it attempted ~100% of the suite. The unstarred one
-swings 26 points across rules purely on what it declined to answer.
+Apply the documented rule uniformly and Opus 5.5 moves **22nd → 1st**, a 21-place swing,
+on a minimum per-board coverage of 2.7%.
 
-### Why this bites hardest exactly where it is used
+**The data contains its own control.** `*` LSVP is Anthropic's safety-filter-exempt
+variant, which refuses far less. The starred rows score ~58 under **every** rule, because
+they attempted ~100% of the suite. The unstarred rows swing 25 points across rules on
+nothing but what they declined to answer. The spread is a property of the scoring.
 
-On the two boards that exclude refusals, the denominator is chosen by the model.
-Opus 5.5 is ranked **#1 on BioSecBench-Function at 73.6%, scored on 12 of 111 items**,
-published CI `[47.5, 99.7]`. A cluster bootstrap over items puts the model *shown at
-rank 2* anywhere in **[1, 27]**. Ranks are rendered as integers for quantities that
-are intervals tens of places wide.
+### A hypothesis I tested, bounded, and discarded
 
-The obvious repair — score everyone on the items everyone attempted — is not
-available: only **7%** of BioSecBench-Function and **2%** of TxBench-Oligo were
-attempted by all 38 rows.
+The obvious worry is that excluding refusals quietly drops the hardest items and inflates
+the score. Measuring each refused item against the 38-model consensus difficulty, across
+65 model×board cells with enough data on both sides:
 
-### One hypothesis I tested and discarded
+> mean gap **−0.58 pts**, 95% bootstrap CI **[−1.93, +0.73]**, Wilcoxon p = 0.61
 
-I expected exclusion to *inflate* scores by quietly dropping the hardest items.
-Measuring each refused item's difficulty against the 38-model consensus, across 64
-model×board cells with enough data: **no significant effect** (Wilcoxon p = 0.58;
-mean gap −0.6 pts). Refusals track topic sensitivity, not difficulty. So the defect
-is inconsistency and precision, not bias — and a correction that only adjusts the
-point estimate would be solving the wrong problem.
+So this is not merely "not significant" — the data **bounds** any difficulty-selection
+effect at under about one point of item difficulty. The point estimates are close to
+right, and a fix aimed at correcting them would be solving the wrong problem.
+
+---
+
+## Finding 2 — A per-board rank is an interval about 13 places wide
+
+A cluster bootstrap over items turns each integer rank into the interval it supports.
+Across all 494 board rows the **median 95% rank interval is 13 places** on boards holding
+~38 rows.
+
+The driver is **board size, not refusals** — the Spearman correlation between coverage
+and interval width is **0.003**. The three long-horizon boards carry 21–25 items and have
+median intervals of 20–23 places; MetagenomicsBench carries 100 items and has a median of
+7. Refusal-driven coverage loss compounds it at the extreme (rows scored on under a
+quarter of a board have a median interval of 28), which is why the worst single cases sit
+on the `exclude` boards: Opus 5.5 is ranked **#1 on BioSecBench-Function at 73.6% from 12
+of 111 items**, published CI `[47.5, 99.7]`.
+
+**The Overall board, by contrast, is well identified** — median interval **4 places** —
+because it pools 1,228 items across thirteen boards. So the two problems are different
+and should not be conflated: *Overall's* defect is its currency, *the per-board numbers'*
+defect is their precision.
+
+Scoring everyone on the items everyone attempted is not an available repair: that
+intersection is 7% of BioSecBench-Function and 2% of TxBench-Oligo.
+
+---
+
+## Finding 3 — 37.7% of the spend buys no ranking information
+
+- **171 items (14.2%) are never solved by any model** — $51,221. **121 have exactly zero
+  passes across every model and every run** ($38,686), which reads as broken graders
+  rather than hard science. 8 of SpatialBench-Long's 21 items are dead, and 31 of
+  EpiBench's 106.
+- **$87,433 (37.7%)** goes to items that cannot separate models.
+- Keeping only the **top 30% of items by discrimination** reproduces the full leaderboard
+  at Spearman **0.986**, for **$61k instead of $229k**.
+- `mobilome_mge_class_abundance_illumina_wastewater_mgx` appears twice in
+  BioSecBench-Surveillance under two ids. Both dead. $2,250.
 
 ---
 
@@ -77,51 +109,45 @@ point estimate would be solving the wrong problem.
 
 In `src/policy.py`, with the contract in `tests/test_scoring_contract.py`.
 
-Not "pick one rule". Biosecurity has a real reason to exclude refusals — refusing is
-the *desired* behaviour there and is scored separately on BioSecBench-Refusal.
+Not "pick one rule". Biosecurity has a real reason to exclude refusals — refusing is the
+*desired* behaviour there and is already scored separately on BioSecBench-Refusal.
 Four changes instead:
 
-1. **Every board declares its refusal rule in the data**, next to its score, rather
-   than leaving it implicit in a prose string.
-2. **The published number is checked against the declared rule**, so drift between
-   the docs and the pipeline fails CI instead of shipping.
-3. **Overall never silently averages mixed rules.** `policy.overall(df, rule)` takes
-   the currency as an argument; publishing one Overall per rule is honest, and
-   averaging two is not.
-4. **Every score carries the coverage it rests on**, and a row below a coverage floor
-   is reported but **not ranked** — because under `exclude`, a rank computed on 12 of
-   111 items is not a rank.
+1. **Every board declares its refusal rule in the data**, next to its score, rather than
+   leaving it implicit in a prose string nothing validates.
+2. **The published number is checked against the declared rule**, so drift between the
+   docs and the pipeline fails CI instead of shipping.
+3. **Overall takes the rule as an argument** and will not silently average mixed
+   currencies. One Overall per rule is honest; one Overall across two is not.
+4. **A score ships with the rank interval it supports**, and the integer rank is withheld
+   when that interval is too wide to mean anything. *(This replaces a coverage floor I
+   proposed first and then abandoned — see above: coverage does not drive width.)*
 
 ```
 $ pytest tests/ -q
-..FF..
+....FF..
 FAILED test_methodology_text_matches_the_implementation
-    9/12 boards contradict their own methodology string
+    9/13 boards contradict their own methodology string
+    (MetagenomicsBench and OncologyBench document theirs correctly)
 FAILED test_overall_does_not_average_boards_with_different_rules
-    Overall averages 2 different refusal rules: {'exclude': 2, 'fail': 10}
-2 failed, 4 passed
+    Overall averages 2 different refusal rules: {'exclude': 2, 'fail': 11}
+2 failed, 6 passed
 ```
 
-The four that pass show the harness is faithful and the proposed Overall is
-well-defined. The two that fail are the finding.
+The six that pass show the harness is faithful — including that the Overall weighting is
+evaluation-count weighted and **not** an unweighted mean, which is guarded explicitly so
+a silent change to the aggregation would fail too. The two that fail are the finding.
 
 ---
 
-## Supporting: what the suite spends on items that move nothing
+## Deliverables
 
-Independent of the rule question, and relevant to where the next $227k goes:
-
-- **166 items (14%) are never solved by any of the 38 models** — $50,319. **120 of
-  them have exactly zero passes across every model and every run**, which reads as
-  broken graders rather than hard science. 8 of SpatialBench-Long's 21 items are dead.
-- **$85,785 (37.8%) of spend** goes to items that cannot separate models.
-- Keeping only the **top 30% of items by discrimination** reproduces the full
-  leaderboard at Spearman **0.984**, 10/10 top-10 overlap, for **$59k instead of
-  $224k**.
-- One duplicated item found: `mobilome_mge_class_abundance_illumina_wastewater_mgx`
-  appears twice in SurveillanceBench under two ids, both dead, $2,250.
-
----
+| | |
+|---|---|
+| **Report page** | https://claude.ai/artifact/5fg5zn61V7yTgcVsFTSDcF |
+| **Memo** | [`MEMO.md`](MEMO.md) |
+| **Proposed change** | [`src/policy.py`](src/policy.py) + [`tests/`](tests/) |
+| **Pipeline** | `src/fetch.py` → `src/report.py` → `out/` |
 
 ## Run it
 
@@ -129,7 +155,7 @@ Independent of the rule question, and relevant to where the next $227k goes:
 pip install pandas numpy scipy pyarrow pytest
 python3 src/fetch.py      # pull the published result files
 python3 src/report.py     # reproduce every number above -> out/
-pytest tests/ -v          # the scoring contract: 4 pass, 2 fail
+pytest tests/ -v          # the scoring contract: 6 pass, 2 fail
 ```
 
 ## Layout
@@ -137,21 +163,13 @@ pytest tests/ -v          # the scoring contract: 4 pass, 2 fail
 | file | what it does |
 |---|---|
 | `src/fetch.py` | download the published JSON |
-| `src/load.py` | flatten to one tidy frame (one row per model × evaluation) |
-| `src/scoring.py` | the three scoring rules, and which board uses which |
-| `src/policy.py` | **the proposed fix**: declared rules, coverage-gated ranking |
-| `src/items.py` | item difficulty, discrimination, subset fidelity |
-| `src/stability.py` | cluster bootstrap over items → rank intervals |
-| `src/report.py` | runs everything, writes `out/` |
-| `tests/` | the scoring contract |
-
-## Deliverables
-
-| | |
-|---|---|
-| **Report page** | https://claude.ai/artifact/5fg5zn61V7yTgcVsFTSDcF — the finding with the four charts |
-| **Memo** | [`MEMO.md`](MEMO.md) — two pages, the register of an internal eng note |
-| **Proposed change** | [`src/policy.py`](src/policy.py) + [`tests/`](tests/) — declared rules, coverage-gated ranking, and the contract that catches the drift |
-| **Pipeline** | `src/fetch.py` -> `src/report.py` -> `out/` |
+| `src/load.py` | flatten 13 boards to one tidy frame; board labels and Overall weights |
+| `src/oncology.py` | OncologyBench, which ships in its own schema |
+| `src/scoring.py` | the three scoring rules, and the weighted Overall |
+| `src/policy.py` | **the proposed fix**: declared rules, interval-gated ranking |
+| `src/bias.py` | is exclusion dropping harder items? bounded, not just tested |
+| `src/stability.py` | cluster bootstrap over items → rank intervals, per board and Overall |
+| `src/items.py` | item difficulty, discrimination, subset fidelity, dead-item profile |
+| `src/report.py` | runs everything, writes `out/` and the report page's `figures.json` |
 
 *Audit by Alveera Munshi, October 2026. Data as published 2026-10-20.*
