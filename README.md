@@ -151,6 +151,7 @@ a silent change to the aggregation would fail too. The two that fail are the fin
 | | |
 |---|---|
 | **Report page** | https://claude.ai/artifact/5fg5zn61V7yTgcVsFTSDcF |
+| **Deck** | https://canva.link/66nyee6c7s0c41f |
 | **Memo** | [`MEMO.md`](MEMO.md) |
 | **Proposed change** | [`src/policy.py`](src/policy.py) + [`tests/`](tests/) |
 | **Pipeline** | `src/fetch.py` → `src/report.py` → `out/` |
