@@ -17,8 +17,8 @@ sys.path.insert(0, str(pathlib.Path(__file__).parent))
 from load import tidy, LABEL
 import scoring
 
-RULE_A = "correct / (runs - refused)   [a refusal never happened]"
-RULE_B = "correct / runs               [a refusal is a wrong answer]"
+RULE_A = "correct / (attempts - refusals)   [a refusal never happened]"
+RULE_B = "correct / attempts               [a refusal is a wrong answer]"
 
 
 def rule_a(g):
@@ -61,18 +61,24 @@ def step_2_two_formulas(df):
   Rule A  "exclude"  {RULE_A}
   Rule B  "fail"     {RULE_B}
 
-A published score is the counts run through one of these. The site gives us the
-counts and the score but describes the formula only in prose - so we can work
-backwards: apply both, and see which one lands on the published number.
+Those score ONE evaluation. A board score is the average of the per-evaluation
+scores - which matters, because under Rule A an evaluation refused on all three
+attempts has no score at all and drops out of the average entirely.
+
+The site gives us the counts and the score but describes the formula only in
+prose, so we can work backwards: apply both, and see which lands on the
+published number.
 """)
     for mid, bench in [("opus-5-5-pi", "functionbench"), ("opus-5-5-pi", "txbench-ab")]:
         g = df[(df.mid == mid) & (df.bench == bench)]
         a, b, pub = rule_a(g), rule_b(g), g.published_pass.iloc[0]
         win = "A" if abs(a - pub) < 0.01 else "B"
+        att = int(g.attempted.sum())
         print(f"  Claude Opus 5.5 (Pi) on {LABEL[bench]}")
-        print(f"    refused {int(g.refused.sum())} of {int(g.runs.sum())} attempts")
-        print(f"    Rule A gives {a:6.2f}")
-        print(f"    Rule B gives {b:6.2f}")
+        print(f"    {len(g)} evaluations x 3 attempts; "
+              f"{len(g) - att} refused outright, leaving {att} with a score")
+        print(f"    Rule A  average over those {att:3d}            = {a:6.2f}")
+        print(f"    Rule B  average over all  {len(g):3d}, refusals 0 = {b:6.2f}")
         print(f"    the site publishes {pub:6.2f}   -> this board uses Rule {win}\n")
     print("  Same model. Same week. Different board. Different rule.")
 

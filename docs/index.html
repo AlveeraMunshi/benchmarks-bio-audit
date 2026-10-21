@@ -284,29 +284,32 @@ footer p{max-width:66ch;margin:0 0 8px}
       <div class="rule" style="--c:var(--exclude)">
         <p class="nm">Rule A &mdash; exclude</p>
         <p class="fm">correct &divide; (attempts &minus; refusals)</p>
-        <p class="ds">Pretend the refusal never happened.</p>
+        <p class="ds">Pretend the refusal never happened. An evaluation refused
+          all three times drops out of the average entirely.</p>
       </div>
       <div class="rule" style="--c:var(--fail)">
         <p class="nm">Rule B &mdash; fail</p>
         <p class="fm">correct &divide; attempts</p>
-        <p class="ds">Count the refusal as a wrong answer.</p>
+        <p class="ds">Count the refusal as a wrong answer. Every evaluation
+          stays in the average.</p>
       </div>
     </div>
     <p>
-      Apply both to every published cell and see which one lands on their number.
-      Here is one model on two different boards:
+      Those score one <em>evaluation</em>; a board score is the average of the
+      per-evaluation scores. Apply both to every published cell and see which one
+      lands on their number. Here is one model on two different boards:
     </p>
     <div class="tablewrap">
       <table>
         <thead><tr>
-          <th>Claude Opus 5.5 (Pi)</th><th>Attempts</th><th>Refused</th>
+          <th>Claude Opus 5.5 (Pi)</th><th>Evaluations</th><th>Refused outright</th>
           <th>Rule A</th><th>Rule B</th><th>Site publishes</th>
         </tr></thead>
         <tbody>
-          <tr><td>BioSecBench-Function</td><td>333</td><td>307</td>
+          <tr><td>BioSecBench-Function</td><td>111</td><td>99</td>
             <td style="color:var(--exclude);font-weight:600">73.61</td><td>5.71</td>
             <td><b>73.61</b> &nbsp;<span class="rk">Rule A</span></td></tr>
-          <tr><td>TxBench-Antibody</td><td>300</td><td>260</td>
+          <tr><td>TxBench-Antibody</td><td>100</td><td>84</td>
             <td>55.21</td><td style="color:var(--fail);font-weight:600">8.33</td>
             <td><b>8.33</b> &nbsp;<span class="rk">Rule B</span></td></tr>
         </tbody>
@@ -314,6 +317,8 @@ footer p{max-width:66ch;margin:0 0 8px}
     </div>
     <p>
       Same model, same week, different board, <strong>different rule</strong>.
+      Under Rule A, BioSecBench-Function is scored on the 12 evaluations the model
+      attempted; the 99 it refused outright never enter the average.
     </p>
 
     <h3>Why that isn't luck</h3>

@@ -151,7 +151,7 @@ a silent change to the aggregation would fail too. The two that fail are the fin
 | | |
 |---|---|
 | **Report page** | https://alveeramunshi.github.io/benchmarks-bio-audit/ (also at https://claude.ai/artifact/5fg5zn61V7yTgcVsFTSDcF) |
-| **Deck** | https://canva.link/66nyee6c7s0c41f |
+| **Deck** | https://canva.link/d2426xpr24aae1r |
 | **Memo** | [`MEMO.md`](MEMO.md) |
 | **Proposed change** | [`src/policy.py`](src/policy.py) + [`tests/`](tests/) |
 | **Pipeline** | `src/fetch.py` → `src/report.py` → `out/` |
@@ -171,7 +171,10 @@ pytest tests/ -v          # the scoring contract: 6 pass, 2 fail
 The site publishes the raw counts *and* the score, so you can work backwards to
 the formula joining them. There are only two sensible things to do with a refused
 attempt — drop it (`correct / (runs - refused)`) or fail it (`correct / runs`) —
-so apply both to every published cell and see which lands on their number.
+so apply both to every published cell and see which lands on their number. Those
+score one *evaluation*; a board score is the average of the per-evaluation scores,
+which is why an evaluation refused on all three attempts drops out of a Rule-A
+average entirely.
 
 When a model refuses nothing the two formulas are arithmetically identical, so
 that cell is silent rather than evidence. Across all 494 cells: **148 discriminate
