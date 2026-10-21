@@ -150,7 +150,7 @@ a silent change to the aggregation would fail too. The two that fail are the fin
 
 | | |
 |---|---|
-| **Report page** | https://claude.ai/artifact/5fg5zn61V7yTgcVsFTSDcF |
+| **Report page** | https://alveeramunshi.github.io/benchmarks-bio-audit/ (also at https://claude.ai/artifact/5fg5zn61V7yTgcVsFTSDcF) |
 | **Deck** | https://canva.link/66nyee6c7s0c41f |
 | **Memo** | [`MEMO.md`](MEMO.md) |
 | **Proposed change** | [`src/policy.py`](src/policy.py) + [`tests/`](tests/) |
@@ -177,6 +177,7 @@ pytest tests/ -v          # the scoring contract: 6 pass, 2 fail
 | `src/bias.py` | is exclusion dropping harder items? bounded, not just tested |
 | `src/stability.py` | cluster bootstrap over items → rank intervals, per board and Overall |
 | `src/items.py` | item difficulty, discrimination, subset fidelity, dead-item profile |
-| `src/report.py` | runs everything, writes `out/` and the report page's `figures.json` |
+| `src/report.py` | runs everything, writes `out/` and the page's `figures.json` |
+| `docs/` | the published report page (GitHub Pages serves this folder) |
 
 *Audit by Alveera Munshi, October 2026. Data as published 2026-10-20.*

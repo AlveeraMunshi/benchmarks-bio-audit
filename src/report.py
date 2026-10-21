@@ -158,6 +158,10 @@ def _figures(df, T, R, RI, OV, fid, it, bb):
                                  board_median_width=float(RI.interval_width.median()),
                                  cov_corr=round(RI.coverage.corr(RI.interval_width, method="spearman"), 3))
     (OUT / "figures.json").write_text(json.dumps(D, indent=1))
+    # the published page reads the same file, so it cannot drift from the pipeline
+    site = OUT.parent / "docs" / "figures.json"
+    if site.parent.exists():
+        site.write_text(json.dumps(D, indent=1))
 
 
 if __name__ == "__main__":
