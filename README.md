@@ -179,7 +179,7 @@ a silent change to the aggregation would fail too. The two that fail are the fin
 | | |
 |---|---|
 | **Report page** | https://alveeramunshi.github.io/benchmarks-bio-audit/ (also at https://claude.ai/artifact/5fg5zn61V7yTgcVsFTSDcF) |
-| **Deck** | https://canva.link/c8cqmyl4t151qg6 |
+| **Deck** | https://www.canva.com/d/1c56BQoplmB1NGd |
 | **Memo** | [`MEMO.md`](MEMO.md) |
 | **Proposed change** | [`src/policy.py`](src/policy.py) + [`tests/`](tests/) |
 | **Pipeline** | `src/fetch.py` → `src/report.py` → `out/` |
