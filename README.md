@@ -17,6 +17,34 @@ everything that follows.
 
 ---
 
+## What this audits
+
+benchmarks.bio is LatchBio's public measurement of how well AI agents handle real
+biology data analysis. Each problem hands a model a snapshot of real experimental
+data taken just before a decision point, and a deterministic grader checks whether it
+recovered the right biological result. The tasks are built around traps — one of
+their own examples: *"WT-style `n_genes >= 200` thresholds zero out a ~386-gene BD
+Rhapsody panel; panel-aware floors retain ~14k PBMCs and correct monocyte counts."*
+A standard quality filter silently deletes the dataset, and the model has to notice.
+
+These are long agentic sessions, not questions: **31 turns and 2.1M tokens per
+attempt at $1.74**, past $4 on the long-horizon boards.
+
+Fourteen boards across four areas — Omics (7), Therapeutics (3), Biosecurity (3),
+Applications (1). **Thirteen measure capability** and average into the headline
+Overall score. The fourteenth, **BioSecBench-Refusal**, measures whether a model
+blocks harmful requests while still answering benign ones, and is reported separately
+as a safeguard. That distinction matters here: on dual-use biology refusing can be the
+*right* behaviour, and LatchBio already grades it on its own board.
+
+**Why audit it.** A benchmark's authority rests entirely on its numbers being computed
+the way it says they are — for a measurement, the numbers *are* the product. So this
+does the one test that matters: download the published numbers and try to reproduce
+them from the published counts. Everything below follows from where that succeeded and
+where it didn't.
+
+---
+
 ## Finding 1 — Overall averages two different scoring rules
 
 Eleven boards score a refused attempt as a **failure**. Two — BioSecBench-Function and

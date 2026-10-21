@@ -416,6 +416,111 @@
   "wilcoxon_p": 0.613,
   "max_plausible_inflation": 0.728
  },
+ "suite": [
+  {
+   "board": "BioSecBench-Surveillance",
+   "category": "biosecurity",
+   "horizon": "short",
+   "assessment": "capabilities",
+   "evals": 102
+  },
+  {
+   "board": "EpiBench",
+   "category": "multiomics",
+   "horizon": "short",
+   "assessment": "capabilities",
+   "evals": 106
+  },
+  {
+   "board": "BioSecBench-Function",
+   "category": "biosecurity",
+   "horizon": "short",
+   "assessment": "capabilities",
+   "evals": 111
+  },
+  {
+   "board": "MetagenomicsBench",
+   "category": "multiomics",
+   "horizon": "short",
+   "assessment": "capabilities",
+   "evals": 100
+  },
+  {
+   "board": "OncologyBench",
+   "category": "applications",
+   "horizon": "long",
+   "assessment": "capabilities",
+   "evals": 25
+  },
+  {
+   "board": "scBench",
+   "category": "multiomics",
+   "horizon": "short",
+   "assessment": "capabilities",
+   "evals": 195
+  },
+  {
+   "board": "scBench-Long",
+   "category": "multiomics",
+   "horizon": "long",
+   "assessment": "capabilities",
+   "evals": 22
+  },
+  {
+   "board": "SpatialBench",
+   "category": "multiomics",
+   "horizon": "short",
+   "assessment": "capabilities",
+   "evals": 115
+  },
+  {
+   "board": "SpatialBench-Long",
+   "category": "multiomics",
+   "horizon": "long",
+   "assessment": "capabilities",
+   "evals": 21
+  },
+  {
+   "board": "TxBench-Antibody",
+   "category": "therapeutics",
+   "horizon": "short",
+   "assessment": "capabilities",
+   "evals": 100
+  },
+  {
+   "board": "TxBench-Oligo",
+   "category": "therapeutics",
+   "horizon": "short",
+   "assessment": "capabilities",
+   "evals": 113
+  },
+  {
+   "board": "TxBench-Preclinical",
+   "category": "therapeutics",
+   "horizon": "short",
+   "assessment": "capabilities",
+   "evals": 100
+  },
+  {
+   "board": "VariantBench",
+   "category": "multiomics",
+   "horizon": "short",
+   "assessment": "capabilities",
+   "evals": 118
+  },
+  {
+   "board": "BioSecBench-Refusal",
+   "category": "biosecurity",
+   "horizon": "short",
+   "assessment": "safeguards",
+   "evals": 107
+  }
+ ],
+ "run": {
+  "turns": 31,
+  "tokens": 2145811,
+  "cost": 1.74
+ },
  "overall_interval": {
   "median_width": 4.0,
   "board_median_width": 13.0,

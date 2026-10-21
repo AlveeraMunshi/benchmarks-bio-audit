@@ -241,6 +241,73 @@ footer p{max-width:66ch;margin:0 0 8px}
   </dl>
 
   <section>
+    <p class="kicker">What this audits</p>
+    <h2>A test suite for AI agents doing real bioinformatics</h2>
+    <p class="lede">
+      benchmarks.bio is LatchBio's public measurement of how well AI agents handle
+      actual biology data analysis. Not a quiz &mdash; each problem hands a model a
+      snapshot of real experimental data taken just before a decision point, and a
+      deterministic grader checks whether it recovered the right biological result.
+    </p>
+    <p>
+      The tasks are built around <strong>traps</strong>: the obvious analysis gives the
+      wrong answer, and you only get it right if you understand what the data actually
+      is. One of their own published examples, from scBench:
+    </p>
+    <div class="callout">
+      <p>&ldquo;WT-style <code>n_genes &gt;= 200</code> thresholds zero out a ~386-gene
+      BD Rhapsody panel; panel-aware floors retain ~14k PBMCs and correct monocyte
+      counts.&rdquo;
+      <span class="src">A standard quality filter silently deletes the whole dataset,
+      because this assay only measures 386 genes in the first place. The model has to
+      notice.</span></p>
+    </div>
+    <p>
+      And these are long agentic sessions rather than questions &mdash; a single attempt
+      averages <strong>31 turns</strong> and <strong>2.1M tokens</strong> at
+      <strong>$1.74</strong>, rising past $4 on the long-horizon boards. That is why
+      running the published suite cost $231,697.
+    </p>
+  </section>
+</div>
+
+<div class="wide">
+  <figure>
+    <p class="fightitle">The suite: fourteen boards in four areas</p>
+    <p class="figsub">evaluations per board &middot; thirteen measure capability, one measures safeguards</p>
+    <div class="scroller"><svg id="fig-suite" role="img"
+      aria-label="Bar chart of the fourteen benchmark boards grouped into omics, therapeutics, biosecurity and applications, sized by number of evaluations."></svg></div>
+    <figcaption>
+      Thirteen boards measure <b>capability</b> and average into the headline Overall
+      score. The fourteenth, <b>BioSecBench-Refusal</b>, measures something different
+      &mdash; whether a model blocks harmful requests while still answering benign ones
+      &mdash; and is reported separately as a safeguard. That distinction matters later:
+      on dual-use biology, refusing can be the <i>right</i> behaviour, and LatchBio
+      already grades it on its own board.
+    </figcaption>
+  </figure>
+</div>
+
+<div class="wrap">
+  <section>
+    <p class="kicker">Why audit it</p>
+    <h2>For a benchmark, the numbers <em>are</em> the product</h2>
+    <p>
+      LatchBio sells a bioinformatics platform, and its stated mission is improving AI's
+      application to biology. If agents are going to do this work, someone has to
+      establish how good they currently are &mdash; and whoever credibly measures that
+      shapes how the field talks about it.
+    </p>
+    <p>
+      Which makes the measurement itself the thing worth checking. A suite's authority
+      rests entirely on its numbers being computed the way it says they are. So this
+      audit does the one test that matters: <strong>download the published numbers and
+      try to reproduce them from the published counts.</strong> Everything below follows
+      from where that succeeded and where it didn't.
+    </p>
+  </section>
+
+  <section>
     <p class="kicker">How this was built</p>
     <h2>First, reproduce the site exactly</h2>
     <p class="lede">
@@ -620,7 +687,7 @@ footer p{max-width:66ch;margin:0 0 8px}
 </footer>
 
 <script>
-const D = {"overall":[{"model":"Opus 5.5 (Claude Code)","pub":42.1,"exc":58.8,"fail":33.9,"rk_pub":22,"rk_exc":1,"rk_fail":31,"cov":2.7},{"model":"Opus 5.5 (Pi)","pub":42.3,"exc":58.2,"fail":33.1,"rk_pub":19,"rk_exc":4,"rk_fail":32,"cov":4.4},{"model":"Opus 5.5* LSVP (Pi)","pub":58.1,"exc":58.5,"fail":58.1,"rk_pub":1,"rk_exc":2,"rk_fail":1,"cov":95.8},{"model":"Opus 5.5* LSVP (CC)","pub":58.1,"exc":58.2,"fail":58.1,"rk_pub":2,"rk_exc":3,"rk_fail":2,"cov":98.3},{"model":"Sonnet 5.5 (Pi)","pub":54.2,"exc":55.2,"fail":52.5,"rk_pub":3,"rk_exc":5,"rk_fail":4,"cov":70.3},{"model":"GPT-6 Astra (Pi)","pub":51.3,"exc":51.3,"fail":49.3,"rk_pub":7,"rk_exc":9,"rk_fail":6,"cov":76.6},{"model":"Grok 4.6 (Grok Build)","pub":45.9,"exc":45.9,"fail":45.9,"rk_pub":15,"rk_exc":18,"rk_fail":14,"cov":100.0},{"model":"Opus 5 (Pi)","pub":50.0,"exc":50.4,"fail":47.7,"rk_pub":8,"rk_exc":10,"rk_fail":10,"cov":75.7},{"model":"Fable 5.1* LSVP (CC)","pub":53.2,"exc":54.0,"fail":53.2,"rk_pub":5,"rk_exc":7,"rk_fail":3,"cov":86.4}],"rules":[{"board":"BioSecBench-Function","rule":"exclude","documented":"exclude","contradicts":false,"fit_exc":38,"fit_fail":9,"cells":38},{"board":"BioSecBench-Surveillance","rule":"exclude","documented":"exclude","contradicts":false,"fit_exc":38,"fit_fail":10,"cells":38},{"board":"EpiBench","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":33,"fit_fail":38,"cells":38},{"board":"MetagenomicsBench","rule":"fail","documented":"fail","contradicts":false,"fit_exc":27,"fit_fail":37,"cells":37},{"board":"OncologyBench","rule":"fail","documented":"fail","contradicts":false,"fit_exc":27,"fit_fail":35,"cells":35},{"board":"SpatialBench","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":36,"fit_fail":38,"cells":38},{"board":"SpatialBench-Long","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":37,"fit_fail":41,"cells":41},{"board":"TxBench-Antibody","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":10,"fit_fail":37,"cells":37},{"board":"TxBench-Oligo","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":23,"fit_fail":38,"cells":38},{"board":"TxBench-Preclinical","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":33,"fit_fail":37,"cells":37},{"board":"VariantBench","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":32,"fit_fail":38,"cells":38},{"board":"scBench","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":33,"fit_fail":38,"cells":38},{"board":"scBench-Long","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":36,"fit_fail":41,"cells":41}],"ranks":[{"model":"Opus 5.5 (Pi)","score":73.6,"items":12,"shown":1,"lo":1,"hi":7,"p1":80.5},{"model":"Opus 5.5 (Claude Code)","score":61.5,"items":13,"shown":2,"lo":1,"hi":27,"p1":13.4},{"model":"Opus 5.5* LSVP (Pi)","score":56.1,"items":110,"shown":3,"lo":2,"hi":7,"p1":2.1},{"model":"Opus 5.5* LSVP (CC)","score":54.2,"items":110,"shown":4,"lo":2,"hi":10,"p1":0.8},{"model":"sonnet-5-5-claude-code","score":53.5,"items":82,"shown":5,"lo":2,"hi":11,"p1":2.0},{"model":"Sonnet 5.5 (Pi)","score":51.7,"items":78,"shown":6,"lo":2,"hi":15,"p1":0.5},{"model":"Fable 5.1* LSVP (CC)","score":48.9,"items":111,"shown":7,"lo":4,"hi":15,"p1":0.1},{"model":"GPT-6 Astra (Pi)","score":48.6,"items":85,"shown":8,"lo":2,"hi":15,"p1":0.6}],"boardsize":[{"board":"BioSecBench-Surveillance","items":102,"width":15.0},{"board":"EpiBench","items":106,"width":17.0},{"board":"BioSecBench-Function","items":111,"width":13.0},{"board":"MetagenomicsBench","items":100,"width":7.024999999999999},{"board":"OncologyBench","items":25,"width":21.0},{"board":"scBench","items":195,"width":11.5125},{"board":"scBench-Long","items":22,"width":20.0},{"board":"SpatialBench","items":115,"width":19.5},{"board":"SpatialBench-Long","items":21,"width":23.0},{"board":"TxBench-Antibody","items":100,"width":12.0},{"board":"TxBench-Oligo","items":113,"width":13.0},{"board":"TxBench-Preclinical","items":100,"width":12.0},{"board":"VariantBench","items":118,"width":10.0}],"fidelity":[{"keep":100,"items":1204,"cost":228695,"rho":1.0,"top10":10},{"keep":60,"items":722,"cost":121897,"rho":0.994,"top10":10},{"keep":40,"items":482,"cost":76231,"rho":0.989,"top10":9},{"keep":30,"items":361,"cost":61011,"rho":0.986,"top10":9},{"keep":20,"items":241,"cost":41508,"rho":0.981,"top10":10}],"items":{"total":1204,"dead":171,"dead_cost":51220,"zero":121,"uninf":400,"uninf_cost":87432,"total_cost":231697},"scale":{"boards":13,"evals":1228,"cells":46414,"runs":147182,"refusals":8452,"spend":231697,"tokens_b":300},"bias":{"n_cells":65,"mean_gap":-0.579,"ci_lo":-1.933,"ci_hi":0.728,"median_gap":0.399,"share_positive":0.538,"wilcoxon_p":0.613,"max_plausible_inflation":0.728},"overall_interval":{"median_width":4.0,"board_median_width":13.0,"cov_corr":0.003}};
+const D = {"overall":[{"model":"Opus 5.5 (Claude Code)","pub":42.1,"exc":58.8,"fail":33.9,"rk_pub":22,"rk_exc":1,"rk_fail":31,"cov":2.7},{"model":"Opus 5.5 (Pi)","pub":42.3,"exc":58.2,"fail":33.1,"rk_pub":19,"rk_exc":4,"rk_fail":32,"cov":4.4},{"model":"Opus 5.5* LSVP (Pi)","pub":58.1,"exc":58.5,"fail":58.1,"rk_pub":1,"rk_exc":2,"rk_fail":1,"cov":95.8},{"model":"Opus 5.5* LSVP (CC)","pub":58.1,"exc":58.2,"fail":58.1,"rk_pub":2,"rk_exc":3,"rk_fail":2,"cov":98.3},{"model":"Sonnet 5.5 (Pi)","pub":54.2,"exc":55.2,"fail":52.5,"rk_pub":3,"rk_exc":5,"rk_fail":4,"cov":70.3},{"model":"GPT-6 Astra (Pi)","pub":51.3,"exc":51.3,"fail":49.3,"rk_pub":7,"rk_exc":9,"rk_fail":6,"cov":76.6},{"model":"Grok 4.6 (Grok Build)","pub":45.9,"exc":45.9,"fail":45.9,"rk_pub":15,"rk_exc":18,"rk_fail":14,"cov":100.0},{"model":"Opus 5 (Pi)","pub":50.0,"exc":50.4,"fail":47.7,"rk_pub":8,"rk_exc":10,"rk_fail":10,"cov":75.7},{"model":"Fable 5.1* LSVP (CC)","pub":53.2,"exc":54.0,"fail":53.2,"rk_pub":5,"rk_exc":7,"rk_fail":3,"cov":86.4}],"rules":[{"board":"BioSecBench-Function","rule":"exclude","documented":"exclude","contradicts":false,"fit_exc":38,"fit_fail":9,"cells":38},{"board":"BioSecBench-Surveillance","rule":"exclude","documented":"exclude","contradicts":false,"fit_exc":38,"fit_fail":10,"cells":38},{"board":"EpiBench","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":33,"fit_fail":38,"cells":38},{"board":"MetagenomicsBench","rule":"fail","documented":"fail","contradicts":false,"fit_exc":27,"fit_fail":37,"cells":37},{"board":"OncologyBench","rule":"fail","documented":"fail","contradicts":false,"fit_exc":27,"fit_fail":35,"cells":35},{"board":"SpatialBench","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":36,"fit_fail":38,"cells":38},{"board":"SpatialBench-Long","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":37,"fit_fail":41,"cells":41},{"board":"TxBench-Antibody","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":10,"fit_fail":37,"cells":37},{"board":"TxBench-Oligo","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":23,"fit_fail":38,"cells":38},{"board":"TxBench-Preclinical","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":33,"fit_fail":37,"cells":37},{"board":"VariantBench","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":32,"fit_fail":38,"cells":38},{"board":"scBench","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":33,"fit_fail":38,"cells":38},{"board":"scBench-Long","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":36,"fit_fail":41,"cells":41}],"ranks":[{"model":"Opus 5.5 (Pi)","score":73.6,"items":12,"shown":1,"lo":1,"hi":7,"p1":80.5},{"model":"Opus 5.5 (Claude Code)","score":61.5,"items":13,"shown":2,"lo":1,"hi":27,"p1":13.4},{"model":"Opus 5.5* LSVP (Pi)","score":56.1,"items":110,"shown":3,"lo":2,"hi":7,"p1":2.1},{"model":"Opus 5.5* LSVP (CC)","score":54.2,"items":110,"shown":4,"lo":2,"hi":10,"p1":0.8},{"model":"sonnet-5-5-claude-code","score":53.5,"items":82,"shown":5,"lo":2,"hi":11,"p1":2.0},{"model":"Sonnet 5.5 (Pi)","score":51.7,"items":78,"shown":6,"lo":2,"hi":15,"p1":0.5},{"model":"Fable 5.1* LSVP (CC)","score":48.9,"items":111,"shown":7,"lo":4,"hi":15,"p1":0.1},{"model":"GPT-6 Astra (Pi)","score":48.6,"items":85,"shown":8,"lo":2,"hi":15,"p1":0.6}],"boardsize":[{"board":"BioSecBench-Surveillance","items":102,"width":15.0},{"board":"EpiBench","items":106,"width":17.0},{"board":"BioSecBench-Function","items":111,"width":13.0},{"board":"MetagenomicsBench","items":100,"width":7.024999999999999},{"board":"OncologyBench","items":25,"width":21.0},{"board":"scBench","items":195,"width":11.5125},{"board":"scBench-Long","items":22,"width":20.0},{"board":"SpatialBench","items":115,"width":19.5},{"board":"SpatialBench-Long","items":21,"width":23.0},{"board":"TxBench-Antibody","items":100,"width":12.0},{"board":"TxBench-Oligo","items":113,"width":13.0},{"board":"TxBench-Preclinical","items":100,"width":12.0},{"board":"VariantBench","items":118,"width":10.0}],"fidelity":[{"keep":100,"items":1204,"cost":228695,"rho":1.0,"top10":10},{"keep":60,"items":722,"cost":121897,"rho":0.994,"top10":10},{"keep":40,"items":482,"cost":76231,"rho":0.989,"top10":9},{"keep":30,"items":361,"cost":61011,"rho":0.986,"top10":9},{"keep":20,"items":241,"cost":41508,"rho":0.981,"top10":10}],"items":{"total":1204,"dead":171,"dead_cost":51220,"zero":121,"uninf":400,"uninf_cost":87432,"total_cost":231697},"scale":{"boards":13,"evals":1228,"cells":46414,"runs":147182,"refusals":8452,"spend":231697,"tokens_b":300},"bias":{"n_cells":65,"mean_gap":-0.579,"ci_lo":-1.933,"ci_hi":0.728,"median_gap":0.399,"share_positive":0.538,"wilcoxon_p":0.613,"max_plausible_inflation":0.728},"suite":[{"board":"BioSecBench-Surveillance","category":"biosecurity","horizon":"short","assessment":"capabilities","evals":102},{"board":"EpiBench","category":"multiomics","horizon":"short","assessment":"capabilities","evals":106},{"board":"BioSecBench-Function","category":"biosecurity","horizon":"short","assessment":"capabilities","evals":111},{"board":"MetagenomicsBench","category":"multiomics","horizon":"short","assessment":"capabilities","evals":100},{"board":"OncologyBench","category":"applications","horizon":"long","assessment":"capabilities","evals":25},{"board":"scBench","category":"multiomics","horizon":"short","assessment":"capabilities","evals":195},{"board":"scBench-Long","category":"multiomics","horizon":"long","assessment":"capabilities","evals":22},{"board":"SpatialBench","category":"multiomics","horizon":"short","assessment":"capabilities","evals":115},{"board":"SpatialBench-Long","category":"multiomics","horizon":"long","assessment":"capabilities","evals":21},{"board":"TxBench-Antibody","category":"therapeutics","horizon":"short","assessment":"capabilities","evals":100},{"board":"TxBench-Oligo","category":"therapeutics","horizon":"short","assessment":"capabilities","evals":113},{"board":"TxBench-Preclinical","category":"therapeutics","horizon":"short","assessment":"capabilities","evals":100},{"board":"VariantBench","category":"multiomics","horizon":"short","assessment":"capabilities","evals":118},{"board":"BioSecBench-Refusal","category":"biosecurity","horizon":"short","assessment":"safeguards","evals":107}],"run":{"turns":31,"tokens":2145811,"cost":1.74},"overall_interval":{"median_width":4.0,"board_median_width":13.0,"cov_corr":0.003}};
 
 const tip = document.getElementById('tip');
 function bindTip(el, html){
@@ -662,6 +729,53 @@ function spread(items, getY, gap){
   sorted.forEach(it => { it._y -= drift; });
   return sorted;
 }
+
+/* ---------- Fig 0 - the suite ---------- */
+(function(){
+  const CATS = [['multiomics','Omics'],['therapeutics','Therapeutics'],
+                ['biosecurity','Biosecurity'],['applications','Applications']];
+  const svg = document.getElementById('fig-suite');
+  const rowH = 27, catGap = 34, T = 10, B = 40, L = 210, R = 130, W = 900;
+  let H = T + B;
+  CATS.forEach(([k]) => { H += catGap + D.suite.filter(b => b.category === k).length * rowH; });
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const x0 = L, x1 = W - R, max = 200;
+  const sx = v => x0 + (v / max) * (x1 - x0);
+
+  for (let g = 0; g <= max; g += 50){
+    el('line', {x1: sx(g), x2: sx(g), y1: T, y2: H - B, stroke: C('--line'), 'stroke-width': 1}, svg);
+    txt(svg, sx(g), H - B + 16, g, {anchor: 'middle', size: 10, fill: C('--ink-3')});
+  }
+  txt(svg, (x0 + x1) / 2, H - 6, 'evaluations on the board',
+    {anchor: 'middle', size: 10, fill: C('--ink-3')});
+
+  let y = T;
+  CATS.forEach(([key, label]) => {
+    const boards = D.suite.filter(b => b.category === key)
+                          .sort((a, b) => b.evals - a.evals);
+    y += 22;
+    txt(svg, 12, y, label.toUpperCase(), {size: 10.5, fill: C('--ink-3'), weight: 600,
+      attrs: {'letter-spacing': '0.12em'}});
+    el('line', {x1: 12, x2: L - 14, y1: y + 10, y2: y + 10,
+      stroke: C('--line'), 'stroke-width': 1}, svg);
+    y += 12;
+    boards.forEach(b => {
+      const safe = b.assessment === 'safeguards';
+      const col = safe ? C('--third') : C('--ink-3');
+      txt(svg, L - 14, y + rowH / 2, b.board, {anchor: 'end', size: 11.5,
+        fill: safe ? C('--third') : C('--ink-2'), weight: safe ? 600 : 400});
+      const bh = 12, by = y + (rowH - bh) / 2;
+      const r = el('rect', {x: x0, y: by, width: Math.max(2, sx(b.evals) - x0),
+        height: bh, rx: 4, fill: col, opacity: safe ? .95 : .55}, svg);
+      bindTip(r, `<b>${b.board}</b><br>${b.evals} evaluations<br>${b.horizon}-horizon \u00b7 ${b.assessment}`);
+      txt(svg, sx(b.evals) + 8, y + rowH / 2, b.evals,
+        {size: 10.5, fill: C('--ink-3')});
+      if (safe) txt(svg, sx(b.evals) + 34, y + rowH / 2, 'safeguards, not in Overall',
+        {size: 10, fill: C('--third'), weight: 600});
+      y += rowH;
+    });
+  });
+})();
 
 /* ---------- Fig 1 - rule fit per board ---------- */
 (function(){

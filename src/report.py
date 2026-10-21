@@ -7,6 +7,7 @@ import load, scoring, policy, stability, bias
 import items as items_mod
 
 OUT = pathlib.Path(__file__).resolve().parents[1] / "out"
+RAW_V1 = pathlib.Path(__file__).resolve().parents[1] / "data" / "raw" / "results" / "v1"
 LOG = []
 
 
@@ -154,6 +155,25 @@ def _figures(df, T, R, RI, OV, fid, it, bb):
                       refusals=int(df.refused.sum()), spend=int(df.costSum.sum()),
                       tokens_b=round(df.tokSum.sum() / 1e9))
     D["bias"] = {k: (round(v, 3) if isinstance(v, float) else v) for k, v in bb.items()}
+
+    # what the suite IS: the boards, grouped the way the site groups them, plus
+    # what a single attempt costs - so the page can describe the thing it audits
+    meta = json.loads((RAW_V1 / "latest.json").read_text())
+    cat = {b["id"]: b for b in meta["benchmarks"]}
+    suite = []
+    for b in sorted(df.bench.unique()):
+        m = cat.get(b, {})
+        suite.append(dict(board=load.LABEL[b], category=m.get("category", "?"),
+                          horizon=m.get("horizon", "?"), assessment="capabilities",
+                          evals=int(df[df.bench == b].eval_id.nunique())))
+    r = cat.get("biosecbench-refusal", {})
+    suite.append(dict(board="BioSecBench-Refusal", category=r.get("category", "biosecurity"),
+                      horizon=r.get("horizon", "short"), assessment="safeguards",
+                      evals=int(r.get("v2EvaluationCount", 107))))
+    D["suite"] = suite
+    D["run"] = dict(turns=round(df[df.turnN > 0].turnSum.sum() / df[df.turnN > 0].turnN.sum()),
+                    tokens=int(df.tokSum.sum() / df.tokN.sum()),
+                    cost=round(df.costSum.sum() / df.costN.sum(), 2))
     D["overall_interval"] = dict(median_width=float(OV.interval_width.median()),
                                  board_median_width=float(RI.interval_width.median()),
                                  cov_corr=round(RI.coverage.corr(RI.interval_width, method="spearman"), 3))
