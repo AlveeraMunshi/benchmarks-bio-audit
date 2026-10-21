@@ -156,6 +156,15 @@ tr.hi td{background:color-mix(in srgb,var(--exclude) 7%,transparent)}
 .rk{color:var(--ink-3)}
 .rk b{color:var(--ink);font-weight:600}
 
+.rules{display:flex;gap:14px;flex-wrap:wrap;margin:24px 0}
+.rule{flex:1 1 300px;background:var(--surface);border:1px solid var(--line);
+  border-left:3px solid var(--c);border-radius:0 8px 8px 0;padding:14px 18px;
+  box-shadow:var(--shadow)}
+.rule .nm{font-family:var(--mono);font-size:11px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--c);font-weight:600;margin:0 0 6px}
+.rule .fm{font-family:var(--mono);font-size:14.5px;font-weight:600;margin:0 0 6px;
+  color:var(--ink)}
+.rule .ds{font-size:13.5px;color:var(--ink-2);margin:0;max-width:none}
 ol.fix{counter-reset:f;list-style:none;padding:0;margin:22px 0}
 ol.fix li{
   counter-increment:f;position:relative;padding:0 0 0 46px;margin-bottom:20px;
@@ -255,6 +264,75 @@ footer p{max-width:66ch;margin:0 0 8px}
       evaluation-count&nbsp;weighted mean, not an unweighted one</strong> &mdash; the
       unweighted version reproduces 0 of 38 rows. With both corrected, everything
       reconciles.
+    </p>
+  </section>
+
+  <section>
+    <p class="kicker">The method</p>
+    <h2>How do you audit a score you didn't compute?</h2>
+    <p class="lede">
+      A score is raw counts run through a formula. benchmarks.bio publishes
+      <em>both</em> &mdash; the counts underneath and the score on top &mdash; but
+      describes the formula only in prose. So you can work backwards to it.
+    </p>
+    <p>
+      Every evaluation is attempted three times, and sometimes the model declines
+      outright. There are only two sensible things a scorer can do with a refused
+      attempt:
+    </p>
+    <div class="rules">
+      <div class="rule" style="--c:var(--exclude)">
+        <p class="nm">Rule A &mdash; exclude</p>
+        <p class="fm">correct &divide; (attempts &minus; refusals)</p>
+        <p class="ds">Pretend the refusal never happened.</p>
+      </div>
+      <div class="rule" style="--c:var(--fail)">
+        <p class="nm">Rule B &mdash; fail</p>
+        <p class="fm">correct &divide; attempts</p>
+        <p class="ds">Count the refusal as a wrong answer.</p>
+      </div>
+    </div>
+    <p>
+      Apply both to every published cell and see which one lands on their number.
+      Here is one model on two different boards:
+    </p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr>
+          <th>Claude Opus 5.5 (Pi)</th><th>Attempts</th><th>Refused</th>
+          <th>Rule A</th><th>Rule B</th><th>Site publishes</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>BioSecBench-Function</td><td>333</td><td>307</td>
+            <td style="color:var(--exclude);font-weight:600">73.61</td><td>5.71</td>
+            <td><b>73.61</b> &nbsp;<span class="rk">Rule A</span></td></tr>
+          <tr><td>TxBench-Antibody</td><td>300</td><td>260</td>
+            <td>55.21</td><td style="color:var(--fail);font-weight:600">8.33</td>
+            <td><b>8.33</b> &nbsp;<span class="rk">Rule B</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Same model, same week, different board, <strong>different rule</strong>.
+    </p>
+
+    <h3>Why that isn't luck</h3>
+    <p>
+      When a model refuses nothing, the two formulas are arithmetically identical
+      &mdash; <code>correct/3</code> and <code>correct/(3&minus;0)</code> are the same
+      number. Such a cell cannot tell the rules apart, so it is <em>silent</em> rather
+      than evidence. Every one of the 494 published cells therefore falls into one of
+      three buckets, and the third is the one that would sink the argument:
+    </p>
+    <dl class="fidelity">
+      <div><dt>Discriminate &amp; match a rule</dt><dd>148</dd></div>
+      <div><dt>Silent (no refusals)</dt><dd>346</dd></div>
+      <div><dt>Match neither rule</dt><dd>0</dd></div>
+    </dl>
+    <p>
+      Every cell either confirms a rule or says nothing. None points the other way,
+      which is why the claim below is &ldquo;all of them&rdquo; and not &ldquo;most of
+      them&rdquo;. <code>src/explain.py</code> prints this walkthrough from live data.
     </p>
   </section>
 
