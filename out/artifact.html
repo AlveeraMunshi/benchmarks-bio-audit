@@ -1,0 +1,798 @@
+<title>Two Rules, One Leaderboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --ground:#f6f7f9; --surface:#ffffff; --surface-2:#eef0f4;
+  --ink:#10131a; --ink-2:#4d5460; --ink-3:#79818f;
+  --line:#dfe3ea; --line-2:#c9cfd9;
+  --fail:#2a78d6;      /* scoring rule: refusal = failure */
+  --exclude:#eb6834;   /* scoring rule: refusal excluded  */
+  --third:#1baf7a;
+  --flag:#e34948;
+  --shadow:0 1px 2px rgba(16,19,26,.05), 0 8px 24px -16px rgba(16,19,26,.22);
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:'IBM Plex Sans',system-ui,-apple-system,Segoe UI,sans-serif;
+  --serif:'Newsreader',Georgia,'Times New Roman',serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#101317; --surface:#171b21; --surface-2:#1e232a;
+    --ink:#f2f4f7; --ink-2:#b2bac6; --ink-3:#848d9b;
+    --line:#272d36; --line-2:#39414c;
+    --fail:#3987e5; --exclude:#d95926; --third:#199e70; --flag:#e66767;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#101317; --surface:#171b21; --surface-2:#1e232a;
+  --ink:#f2f4f7; --ink-2:#b2bac6; --ink-3:#848d9b;
+  --line:#272d36; --line-2:#39414c;
+  --fail:#3987e5; --exclude:#d95926; --third:#199e70; --flag:#e66767;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--ground); color:var(--ink);
+  font-family:var(--sans); font-size:16px; line-height:1.62;
+  margin:0; padding-inline:16px; padding-block:0;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:760px;margin:0 auto}
+.wide{max-width:980px;margin:0 auto}
+
+header.top{border-bottom:1px solid var(--line);padding-block:40px 30px;margin-bottom:38px}
+.eyebrow{
+  font-family:var(--mono); font-size:11.5px; font-weight:500;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3);
+  display:flex; gap:10px; flex-wrap:wrap; align-items:baseline;
+}
+.eyebrow b{color:var(--exclude);font-weight:600}
+h1{
+  font-family:var(--serif); font-weight:500; font-size:clamp(32px,6.2vw,50px);
+  line-height:1.08; letter-spacing:-.018em; margin:16px 0 0; text-wrap:balance;
+}
+h1 em{font-style:italic;color:var(--exclude)}
+.standfirst{
+  font-size:clamp(16.5px,2.4vw,18.5px); color:var(--ink-2);
+  margin:18px 0 0; max-width:64ch; text-wrap:pretty;
+}
+.byline{
+  font-family:var(--mono); font-size:12px; color:var(--ink-3);
+  margin-top:22px; display:flex; gap:8px 18px; flex-wrap:wrap;
+}
+
+.fidelity{
+  display:flex; flex-wrap:wrap; gap:1px; background:var(--line);
+  border:1px solid var(--line); border-radius:7px; overflow:hidden; margin:30px 0 0;
+}
+.fidelity div{flex:1 1 160px;background:var(--surface);padding:13px 15px}
+.fidelity dt{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 4px;
+}
+.fidelity dd{
+  margin:0;font-family:var(--mono);font-size:19px;font-weight:600;
+  font-variant-numeric:tabular-nums;letter-spacing:-.02em;
+}
+.fidelity dd small{font-size:12px;font-weight:400;color:var(--ink-3);letter-spacing:0}
+
+section{margin-block:58px}
+.kicker{
+  font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 10px;
+}
+.kicker b{color:var(--exclude);font-weight:600}
+h2{
+  font-family:var(--serif);font-weight:500;font-size:clamp(24px,4vw,32px);
+  line-height:1.2;letter-spacing:-.015em;margin:0 0 14px;text-wrap:balance;
+}
+h3{
+  font-family:var(--sans);font-weight:600;font-size:16.5px;
+  letter-spacing:-.005em;margin:34px 0 8px;
+}
+p{margin:0 0 15px;max-width:66ch;text-wrap:pretty}
+.lede{font-size:17.5px;color:var(--ink-2)}
+strong{font-weight:600}
+code,.num{
+  font-family:var(--mono);font-size:.9em;font-variant-numeric:tabular-nums;
+  background:var(--surface-2);padding:1px 5px;border-radius:4px;
+}
+.num{background:none;padding:0;font-weight:600}
+
+.callout{
+  border-left:2.5px solid var(--exclude); background:var(--surface);
+  padding:16px 20px; margin:26px 0; border-radius:0 7px 7px 0;
+  box-shadow:var(--shadow);
+}
+.callout p{margin:0 0 10px;max-width:62ch}
+.callout p:last-of-type{margin-bottom:0}
+.callout .src{
+  font-family:var(--mono);font-size:11px;color:var(--ink-3);
+  margin-top:4px;display:block;
+}
+blockquote{
+  margin:22px 0; padding:0 0 0 20px; border-left:2px solid var(--line-2);
+  font-family:var(--serif); font-size:18px; font-style:italic; color:var(--ink-2);
+  max-width:60ch;
+}
+
+figure{margin:30px 0;background:var(--surface);border:1px solid var(--line);
+  border-radius:9px;padding:20px 20px 16px;box-shadow:var(--shadow)}
+figcaption{
+  font-size:13.5px;color:var(--ink-2);margin-top:14px;
+  padding-top:12px;border-top:1px solid var(--line);max-width:none;
+}
+figcaption b{color:var(--ink);font-weight:600}
+.fightitle{font-family:var(--sans);font-weight:600;font-size:14.5px;margin:0 0 2px}
+.figsub{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin:0 0 16px;
+  letter-spacing:.03em}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 14px;
+  font-family:var(--mono);font-size:11.5px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.swatch{width:11px;height:11px;border-radius:3px;flex:none}
+.scroller{overflow-x:auto}
+svg{display:block;width:100%;height:auto;max-width:100%}
+svg text{font-family:var(--mono);fill:var(--ink-2)}
+
+.tablewrap{overflow-x:auto;margin:24px 0}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:560px}
+th,td{text-align:right;padding:9px 12px;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+thead th{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3);font-weight:500;
+  border-bottom:1px solid var(--line-2);
+}
+tbody td{font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:13px}
+tbody td:first-child{font-family:var(--sans);font-size:14px}
+tr.hi td{background:color-mix(in srgb,var(--exclude) 7%,transparent)}
+.rk{color:var(--ink-3)}
+.rk b{color:var(--ink);font-weight:600}
+
+ol.fix{counter-reset:f;list-style:none;padding:0;margin:22px 0}
+ol.fix li{
+  counter-increment:f;position:relative;padding:0 0 0 46px;margin-bottom:20px;
+  max-width:66ch;
+}
+ol.fix li::before{
+  content:counter(f,decimal-leading-zero);position:absolute;left:0;top:1px;
+  font-family:var(--mono);font-size:12px;font-weight:600;color:var(--exclude);
+  border:1px solid var(--line-2);border-radius:5px;padding:2px 7px;
+}
+ol.fix b{display:block;font-weight:600;margin-bottom:2px}
+
+pre.term{
+  background:var(--surface);border:1px solid var(--line);border-radius:9px;
+  padding:16px 18px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;
+  line-height:1.72;margin:24px 0;box-shadow:var(--shadow);
+}
+pre.term .pass{color:var(--third);font-weight:600}
+pre.term .fail{color:var(--flag);font-weight:600}
+pre.term .dim{color:var(--ink-3)}
+
+footer{
+  border-top:1px solid var(--line);margin-top:64px;padding-block:26px 48px;
+  font-family:var(--mono);font-size:12px;color:var(--ink-3);
+}
+footer p{max-width:66ch;margin:0 0 8px}
+
+#tip{
+  position:fixed;pointer-events:none;opacity:0;transition:opacity .11s;
+  background:var(--ink);color:var(--ground);border-radius:6px;
+  padding:7px 10px;font-family:var(--mono);font-size:11.5px;line-height:1.5;
+  z-index:50;max-width:280px;box-shadow:0 6px 20px rgba(0,0,0,.3);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #tip{color:#0e1116}}
+:root[data-theme="dark"] #tip{color:#0e1116}
+.hit{cursor:crosshair}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+:focus-visible{outline:2px solid var(--exclude);outline-offset:2px}
+</style>
+
+<div id="tip" role="status" aria-live="polite"></div>
+
+<header class="top">
+  <div class="wrap">
+    <div class="eyebrow">
+      <span>Independent audit</span><span>&#183;</span>
+      <span>benchmarks.bio</span><span>&#183;</span>
+      <span>data as published <b>2026&#8209;10&#8209;20</b></span>
+    </div>
+    <h1>The Overall score averages <em>two different scoring rules</em></h1>
+    <p class="standfirst">
+      LatchBio's agentic-biology benchmark publishes thirteen capability boards and
+      averages them into one headline number. Eleven of those boards count a refused
+      attempt as a failure. Two drop it from the denominator entirely. The same
+      behaviour is free on two boards and fatal on eleven, and which rule applies
+      decides who sits at the top.
+    </p>
+    <div class="byline">
+      <span>Alveera Munshi</span>
+      <span>October 2026</span>
+      <span>Reproduced from published JSON &mdash; no models re-run</span>
+    </div>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+  <dl class="fidelity">
+    <div><dt>Board scores reproduced</dt><dd>494/494 <small>&plusmn;0.005 pts</small></dd></div>
+    <div><dt>Overall reproduced</dt><dd>38/38 <small>&plusmn;0.004 pts</small></dd></div>
+    <div><dt>Graded runs analysed</dt><dd>147,182</dd></div>
+    <div><dt>Boards whose docs are wrong</dt><dd>9<small>/13</small></dd></div>
+  </dl>
+
+  <section>
+    <p class="kicker">How this was built</p>
+    <h2>First, reproduce the site exactly</h2>
+    <p class="lede">
+      Every result file behind benchmarks.bio is public: per-evaluation counts for
+      13 capability boards, 1,228 evaluations, 38 model&times;harness rows. I rebuilt
+      both leaderboards from those counts.
+    </p>
+    <p>
+      The pipeline reproduces <strong>all 494 published board scores to within 0.005
+      points and all 38 Overall scores to within 0.004</strong>. That matters because it
+      is the licence for everything below &mdash; these are not re-runs or estimates,
+      they are arithmetic on LatchBio's own numbers. It is also <em>how</em> the finding
+      surfaced: a large block of cells refused to reproduce under the rule the site
+      documents.
+    </p>
+    <p>
+      Two details cost me a first draft, and both are worth stating because they are easy
+      to get wrong. <strong>OncologyBench is the thirteenth board</strong> and does not
+      live under <code>/data/v1/</code> like the others; it ships its own schema at
+      <code>/data/oncologybench/index.json</code>. And <strong>Overall is an
+      evaluation-count&nbsp;weighted mean, not an unweighted one</strong> &mdash; the
+      unweighted version reproduces 0 of 38 rows. With both corrected, everything
+      reconciles.
+    </p>
+  </section>
+
+  <section>
+    <p class="kicker"><b>Finding 1</b> &nbsp;&middot;&nbsp; the rule</p>
+    <h2>Two rules, applied inconsistently, documented as one</h2>
+    <p>
+      I fitted both candidate rules to every published cell. A board either scores a
+      refusal as a wrong answer (<span class="num" style="color:var(--fail)">refusal = failure</span>)
+      or removes it from the denominator
+      (<span class="num" style="color:var(--exclude)">refusal excluded</span>), and the
+      fit is unambiguous &mdash; the correct rule reproduces a board exactly, the wrong
+      one does not.
+    </p>
+  </section>
+</div>
+
+<div class="wide">
+  <figure>
+    <p class="fightitle">Which rule reproduces each board's published scores</p>
+    <p class="figsub">model&times;harness cells matching to within 0.01 points &middot; higher is the rule in use</p>
+    <div class="legend">
+      <span><i class="swatch" style="background:var(--fail)"></i> refusal = failure</span>
+      <span><i class="swatch" style="background:var(--exclude)"></i> refusal excluded from denominator</span>
+    </div>
+    <div class="scroller"><svg id="fig-rules" role="img"
+      aria-label="Grouped bar chart across thirteen boards. Eleven are reproduced exactly by the refusal-equals-failure rule. BioSecBench-Function and BioSecBench-Surveillance are reproduced only by the refusal-excluded rule."></svg></div>
+    <figcaption>
+      The two biosecurity boards match <b>refusal excluded</b> on 38 of 38 cells and the
+      failure rule on only 9 and 10. Every other board matches <b>refusal = failure</b>
+      on every cell. There is no ambiguity in the fit. Boards marked
+      <span style="color:var(--exclude)">&#9679;</span> contradict their own published
+      methodology text.
+    </figcaption>
+  </figure>
+</div>
+
+<div class="wrap">
+  <p>
+    Eleven of the thirteen boards nonetheless carry identical methodology text:
+  </p>
+  <blockquote>
+    &ldquo;Refusals are excluded from the denominator and errors count as failures.&rdquo;
+  </blockquote>
+  <p>
+    That sentence is true of two boards. <strong>Two others describe what they actually
+    do</strong> &mdash; and two independent boards getting it right is the strongest
+    evidence that the rule is deliberate and the prose on the remaining nine is simply
+    stale:
+  </p>
+  <div class="callout">
+    <p>&ldquo;Refusals and timeouts both count as failures and <strong>stay in the
+    denominator</strong>. With three runs on every eval this equals the pooled
+    correct&nbsp;/&nbsp;graded rate exactly.&rdquo;
+    <span class="src">MetagenomicsBench &mdash; /data/v1/metagenomics.json</span></p>
+    <p>&ldquo;Refusals and the four timed-out slots <strong>remain in the
+    denominator</strong>.&rdquo;
+    <span class="src">OncologyBench &mdash; /data/oncologybench/index.json</span></p>
+  </div>
+
+  <section>
+    <h3>Why it matters: it decides who is first</h3>
+    <p>
+      Overall is a weighted mean of those thirteen boards, so the inconsistency
+      propagates straight into the headline ranking. Apply the <em>documented</em> rule
+      uniformly and Claude Opus&nbsp;5.5 moves from <strong>22nd to 1st</strong> &mdash;
+      on a minimum per-board coverage of 2.7%. Apply refusal-as-failure uniformly and the
+      current top is unchanged. What is published today is neither.
+    </p>
+  </section>
+</div>
+
+<div class="wide">
+  <figure>
+    <p class="fightitle">The same model, scored three ways</p>
+    <p class="figsub">overall capability score, evaluation-count weighted across 13 boards</p>
+    <div class="legend">
+      <span><i class="swatch" style="background:var(--exclude)"></i> Opus 5.5 &mdash; standard run (refuses often)</span>
+      <span><i class="swatch" style="background:var(--fail)"></i> Opus 5.5* LSVP &mdash; safety-filter-exempt (attempts ~everything)</span>
+    </div>
+    <div class="scroller"><svg id="fig-swing" role="img"
+      aria-label="Slope chart. The standard Opus 5.5 runs swing about 25 points across the three scoring rules, while the LSVP runs of the same model stay flat near 58 under all three."></svg></div>
+    <figcaption>
+      <b>The flat lines are the control.</b> LSVP is Anthropic's safety-filter-exempt
+      variant of the same model, so it attempts nearly the whole suite &mdash; and it
+      scores ~58 under <b>every</b> rule. The standard run of that same model swings 25
+      points, entirely on what it declined to answer. The spread is a property of the
+      scoring, not of the model.
+    </figcaption>
+  </figure>
+</div>
+
+<div class="wrap">
+  <div class="tablewrap">
+    <table>
+      <caption class="figsub" style="text-align:left;caption-side:top">
+        Overall score and rank under each rule &middot; min. per-board coverage
+      </caption>
+      <thead><tr>
+        <th>Model</th><th>As published</th><th>All <i>exclude</i></th>
+        <th>All <i>fail</i></th><th>Min coverage</th>
+      </tr></thead>
+      <tbody id="tbl-overall"></tbody>
+    </table>
+  </div>
+
+  <section>
+    <h3>A hypothesis I tested, bounded, and discarded</h3>
+    <p>
+      The obvious worry is that dropping refusals quietly removes the hardest items.
+      I checked, scoring every refused item against the 38-model consensus difficulty,
+      across 65 model&times;board cells with enough data on both sides.
+    </p>
+    <div class="callout">
+      <p>mean gap <strong>&minus;0.58 pts</strong> &nbsp;&middot;&nbsp; 95% bootstrap CI
+      <strong>[&minus;1.93, +0.73]</strong> &nbsp;&middot;&nbsp; Wilcoxon
+      <code>p = 0.61</code></p>
+    </div>
+    <p>
+      I'd stress the interval over the p-value. This is not &ldquo;we failed to detect an
+      effect&rdquo; &mdash; the data <strong>bounds</strong> any difficulty-selection
+      effect at under about one point of item difficulty. The point estimates are close
+      to right, so a correction aimed at the numbers themselves would be solving the
+      wrong problem.
+    </p>
+  </section>
+
+  <section>
+    <p class="kicker"><b>Finding 2</b> &nbsp;&middot;&nbsp; the precision</p>
+    <h2>A per-board rank is an interval about 13 places wide</h2>
+    <p>
+      A cluster bootstrap over items turns each integer rank into the interval it
+      actually supports. Across all <strong>494 board rows the median 95% rank interval
+      is 13 places</strong>, on boards holding around 38 rows.
+    </p>
+    <p>
+      I expected refusals to be the cause. They are not: the correlation between coverage
+      and interval width is <strong>0.003</strong>. The driver is <strong>how many items
+      a board has</strong>.
+    </p>
+  </section>
+</div>
+
+<div class="wide">
+  <figure>
+    <p class="fightitle">Short boards cannot separate models, however well they are run</p>
+    <p class="figsub">median 95% bootstrap rank interval vs number of items on the board</p>
+    <div class="legend">
+      <span><i class="swatch" style="background:var(--exclude)"></i> long-horizon boards (21&ndash;25 items)</span>
+      <span><i class="swatch" style="background:var(--fail)"></i> all other boards</span>
+    </div>
+    <div class="scroller"><svg id="fig-size" role="img"
+      aria-label="Scatter plot of median bootstrap rank-interval width against board size for thirteen boards. The three smallest boards have the widest intervals."></svg></div>
+    <figcaption>
+      The three long-horizon boards carry 21&ndash;25 items and have median rank
+      intervals of 20&ndash;23 places out of ~40. MetagenomicsBench carries 100 items and
+      has a median of 7. <b>The Overall board, by contrast, is well identified</b> &mdash;
+      median interval <b>4 places</b> &mdash; because it pools all 1,228 items. The two
+      defects are different: Overall's problem is its <i>currency</i>, the per-board
+      numbers' problem is their <i>precision</i>.
+    </figcaption>
+  </figure>
+
+  <figure>
+    <p class="fightitle">Where the two problems meet &mdash; BioSecBench-Function</p>
+    <p class="figsub">95% bootstrap rank interval over items, 2,000 resamples &middot; 38 rows on the board</p>
+    <div class="legend">
+      <span><i class="swatch" style="background:var(--exclude)"></i> scored on under half the board</span>
+      <span><i class="swatch" style="background:var(--fail)"></i> scored on most of the board</span>
+    </div>
+    <div class="scroller"><svg id="fig-ranks" role="img"
+      aria-label="Interval chart of bootstrap rank ranges for the top eight rows of BioSecBench-Function. Rows scored on few items have intervals spanning most of the board."></svg></div>
+    <figcaption>
+      Low coverage compounds small samples at the extreme, and this is the extreme. Opus
+      5.5 is ranked <b>#1 at 73.6% from 12 of 111 items</b>, with a published CI of
+      <code>[47.5, 99.7]</code>. Scoring everyone on the items everyone attempted is not
+      an available repair &mdash; that intersection is <b>7%</b> of this board and
+      <b>2%</b> of TxBench-Oligo.
+    </figcaption>
+  </figure>
+</div>
+
+<div class="wrap">
+  <section>
+    <p class="kicker">The proposal</p>
+    <h2>Make the rule a declared property, not an implicit one</h2>
+    <p>
+      Not &ldquo;pick one rule&rdquo;. Biosecurity has a real reason to exclude refusals
+      &mdash; refusing is the desired behaviour there, and it is already scored
+      separately on BioSecBench-Refusal. Four changes instead, implemented in
+      <code>src/policy.py</code>:
+    </p>
+    <ol class="fix">
+      <li><b>Each board declares its refusal rule in the data</b>
+        Beside its score, rather than implied by a prose string that nothing validates.</li>
+      <li><b>The published number is tested against the declared rule</b>
+        Drift between the docs and the pipeline fails CI instead of shipping.</li>
+      <li><b>Overall takes the rule as an argument</b>
+        And refuses to average mixed currencies. One Overall per rule is honest; one
+        Overall across two is not.</li>
+      <li><b>A score ships with the rank interval it supports</b>
+        And the integer rank is withheld when that interval is too wide to mean anything.
+        This replaces a coverage floor I proposed first and then abandoned, because the
+        data says coverage is not what drives width.</li>
+    </ol>
+    <p>
+      The contract lives in <code>tests/test_scoring_contract.py</code>. Six tests pass
+      &mdash; including a guard that the Overall aggregation is evaluation-count weighted
+      and <em>not</em> an unweighted mean, so a silent change there would fail too. Two
+      fail. The two failures are the finding.
+    </p>
+<pre class="term"><span class="dim">$</span> pytest tests/ -q
+<span class="pass">....</span><span class="fail">FF</span><span class="pass">..</span>
+
+<span class="fail">FAILED</span> test_methodology_text_matches_the_implementation
+  <span class="dim">AssertionError:</span> 9/13 boards contradict their own methodology
+  string (MetagenomicsBench and OncologyBench document theirs correctly)
+
+<span class="fail">FAILED</span> test_overall_does_not_average_boards_with_different_rules
+  <span class="dim">AssertionError:</span> Overall averages 2 different refusal rules:
+  {'exclude': 2, 'fail': 11}. A refusal is free on the 'exclude'
+  boards and fatal on the rest.
+
+<span class="fail">2 failed</span>, <span class="pass">6 passed</span></pre>
+  </section>
+
+  <section>
+    <p class="kicker"><b>Finding 3</b> &nbsp;&middot;&nbsp; the spend</p>
+    <h2>37.7% of the budget buys no ranking information</h2>
+    <p>
+      Independent of the rule question, and relevant to where the next $230k goes.
+      <strong>171 items (14.2%) are never solved by any model</strong>, costing $51,221
+      &mdash; and <strong>121 have exactly zero passes across every model and every
+      run</strong> ($38,686), which reads as broken graders rather than hard science.
+      Eight of SpatialBench-Long's 21 items are dead, and 31 of EpiBench's 106.
+    </p>
+  </section>
+</div>
+
+<div class="wide">
+  <figure>
+    <p class="fightitle">Keeping only the most discriminating items reproduces the leaderboard</p>
+    <p class="figsub">rank correlation with the full 1,204-item suite &middot; labelled with what that subset cost to run</p>
+    <div class="scroller"><svg id="fig-fidelity" role="img"
+      aria-label="Line chart. Keeping the top 30 percent of items by discrimination reproduces the full leaderboard at Spearman 0.986 for 61 thousand dollars instead of 229 thousand."></svg></div>
+    <figcaption>
+      The top <b>30%</b> of items by discrimination reproduce the full ranking at Spearman
+      <b>0.986</b>, for <b>$61k instead of $229k</b>. The freed budget buys roughly double
+      the replicates on the items that do separate models &mdash; which is also what
+      narrows the intervals in the charts above, and it is the one lever that helps the
+      short boards.
+    </figcaption>
+  </figure>
+</div>
+
+<div class="wrap">
+  <section>
+    <h3>One more, for the QA pile</h3>
+    <p>
+      <code>mobilome_mge_class_abundance_illumina_wastewater_mgx</code> appears twice in
+      BioSecBench-Surveillance under two different ids. Both are dead. $2,250.
+    </p>
+  </section>
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>
+      Sources: <code>benchmarks.bio/data/v1/&lt;board&gt;.json</code>,
+      <code>/data/oncologybench/index.json</code> and <code>/results/v1/latest.json</code>,
+      retrieved 2026-10-20. No page scraping, no model re-runs. Pipeline, tests and every
+      figure above reproduce from <code>src/fetch.py</code> then <code>src/report.py</code>.
+    </p>
+    <p>
+      &ldquo;LSVP is Anthropic's safety-filter-exempt evaluation variant, which produces
+      fewer refusals on biology prompts&rdquo; &mdash; benchmarks.bio.
+    </p>
+  </div>
+</footer>
+
+<script>
+const D = {"overall":[{"model":"Opus 5.5 (Claude Code)","pub":42.1,"exc":58.8,"fail":33.9,"rk_pub":22,"rk_exc":1,"rk_fail":31,"cov":2.7},{"model":"Opus 5.5 (Pi)","pub":42.3,"exc":58.2,"fail":33.1,"rk_pub":19,"rk_exc":4,"rk_fail":32,"cov":4.4},{"model":"Opus 5.5* LSVP (Pi)","pub":58.1,"exc":58.5,"fail":58.1,"rk_pub":1,"rk_exc":2,"rk_fail":1,"cov":95.8},{"model":"Opus 5.5* LSVP (CC)","pub":58.1,"exc":58.2,"fail":58.1,"rk_pub":2,"rk_exc":3,"rk_fail":2,"cov":98.3},{"model":"Sonnet 5.5 (Pi)","pub":54.2,"exc":55.2,"fail":52.5,"rk_pub":3,"rk_exc":5,"rk_fail":4,"cov":70.3},{"model":"GPT-6 Astra (Pi)","pub":51.3,"exc":51.3,"fail":49.3,"rk_pub":7,"rk_exc":9,"rk_fail":6,"cov":76.6},{"model":"Grok 4.6 (Grok Build)","pub":45.9,"exc":45.9,"fail":45.9,"rk_pub":15,"rk_exc":18,"rk_fail":14,"cov":100.0},{"model":"Opus 5 (Pi)","pub":50.0,"exc":50.4,"fail":47.7,"rk_pub":8,"rk_exc":10,"rk_fail":10,"cov":75.7},{"model":"Fable 5.1* LSVP (CC)","pub":53.2,"exc":54.0,"fail":53.2,"rk_pub":5,"rk_exc":7,"rk_fail":3,"cov":86.4}],"rules":[{"board":"BioSecBench-Function","rule":"exclude","documented":"exclude","contradicts":false,"fit_exc":38,"fit_fail":9,"cells":38},{"board":"BioSecBench-Surveillance","rule":"exclude","documented":"exclude","contradicts":false,"fit_exc":38,"fit_fail":10,"cells":38},{"board":"EpiBench","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":33,"fit_fail":38,"cells":38},{"board":"MetagenomicsBench","rule":"fail","documented":"fail","contradicts":false,"fit_exc":27,"fit_fail":37,"cells":37},{"board":"OncologyBench","rule":"fail","documented":"fail","contradicts":false,"fit_exc":27,"fit_fail":35,"cells":35},{"board":"SpatialBench","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":36,"fit_fail":38,"cells":38},{"board":"SpatialBench-Long","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":37,"fit_fail":41,"cells":41},{"board":"TxBench-Antibody","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":10,"fit_fail":37,"cells":37},{"board":"TxBench-Oligo","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":23,"fit_fail":38,"cells":38},{"board":"TxBench-Preclinical","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":33,"fit_fail":37,"cells":37},{"board":"VariantBench","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":32,"fit_fail":38,"cells":38},{"board":"scBench","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":33,"fit_fail":38,"cells":38},{"board":"scBench-Long","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":36,"fit_fail":41,"cells":41}],"ranks":[{"model":"Opus 5.5 (Pi)","score":73.6,"items":12,"shown":1,"lo":1,"hi":7,"p1":80.5},{"model":"Opus 5.5 (Claude Code)","score":61.5,"items":13,"shown":2,"lo":1,"hi":27,"p1":13.4},{"model":"Opus 5.5* LSVP (Pi)","score":56.1,"items":110,"shown":3,"lo":2,"hi":7,"p1":2.1},{"model":"Opus 5.5* LSVP (CC)","score":54.2,"items":110,"shown":4,"lo":2,"hi":10,"p1":0.8},{"model":"sonnet-5-5-claude-code","score":53.5,"items":82,"shown":5,"lo":2,"hi":11,"p1":2.0},{"model":"Sonnet 5.5 (Pi)","score":51.7,"items":78,"shown":6,"lo":2,"hi":15,"p1":0.5},{"model":"Fable 5.1* LSVP (CC)","score":48.9,"items":111,"shown":7,"lo":4,"hi":15,"p1":0.1},{"model":"GPT-6 Astra (Pi)","score":48.6,"items":85,"shown":8,"lo":2,"hi":15,"p1":0.6}],"boardsize":[{"board":"BioSecBench-Surveillance","items":102,"width":15.0},{"board":"EpiBench","items":106,"width":17.0},{"board":"BioSecBench-Function","items":111,"width":13.0},{"board":"MetagenomicsBench","items":100,"width":7.024999999999999},{"board":"OncologyBench","items":25,"width":21.0},{"board":"scBench","items":195,"width":11.5125},{"board":"scBench-Long","items":22,"width":20.0},{"board":"SpatialBench","items":115,"width":19.5},{"board":"SpatialBench-Long","items":21,"width":23.0},{"board":"TxBench-Antibody","items":100,"width":12.0},{"board":"TxBench-Oligo","items":113,"width":13.0},{"board":"TxBench-Preclinical","items":100,"width":12.0},{"board":"VariantBench","items":118,"width":10.0}],"fidelity":[{"keep":100,"items":1204,"cost":228695,"rho":1.0,"top10":10},{"keep":60,"items":722,"cost":121897,"rho":0.994,"top10":10},{"keep":40,"items":482,"cost":76231,"rho":0.989,"top10":9},{"keep":30,"items":361,"cost":61011,"rho":0.986,"top10":9},{"keep":20,"items":241,"cost":41508,"rho":0.981,"top10":10}],"items":{"total":1204,"dead":171,"dead_cost":51220,"zero":121,"uninf":400,"uninf_cost":87432,"total_cost":231697},"scale":{"boards":13,"evals":1228,"cells":46414,"runs":147182,"refusals":8452,"spend":231697,"tokens_b":300},"bias":{"n_cells":65,"mean_gap":-0.579,"ci_lo":-1.933,"ci_hi":0.728,"median_gap":0.399,"share_positive":0.538,"wilcoxon_p":0.613,"max_plausible_inflation":0.728},"overall_interval":{"median_width":4.0,"board_median_width":13.0,"cov_corr":0.003}};
+
+const tip = document.getElementById('tip');
+function bindTip(el, html){
+  el.classList.add('hit');
+  el.addEventListener('pointerenter', e => { tip.innerHTML = html; tip.style.opacity = 1; move(e); });
+  el.addEventListener('pointermove', move);
+  el.addEventListener('pointerleave', () => { tip.style.opacity = 0; });
+  function move(e){
+    const pad = 14, w = tip.offsetWidth, h = tip.offsetHeight;
+    let x = e.clientX + pad, y = e.clientY + pad;
+    if (x + w > innerWidth - 8) x = e.clientX - w - pad;
+    if (y + h > innerHeight - 8) y = e.clientY - h - pad;
+    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+  }
+}
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, parent){
+  const n = document.createElementNS(NS, tag);
+  for (const k in attrs) n.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(n);
+  return n;
+}
+function txt(p, x, y, s, o = {}){
+  const t = el('text', Object.assign({x, y, 'font-size': o.size || 11,
+    'text-anchor': o.anchor || 'start', 'dominant-baseline': o.base || 'middle'}, o.attrs || {}), p);
+  if (o.fill) t.setAttribute('fill', o.fill);
+  if (o.weight) t.setAttribute('font-weight', o.weight);
+  t.textContent = s;
+  return t;
+}
+const C = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+/* push labels apart so none overprint, then recentre the run */
+function spread(items, getY, gap){
+  const sorted = items.slice().sort((a, b) => getY(a) - getY(b));
+  let prev = -Infinity;
+  sorted.forEach(it => { it._y = Math.max(getY(it), prev + gap); prev = it._y; });
+  const last = sorted[sorted.length - 1];
+  const drift = (last._y - getY(last)) / 2;
+  sorted.forEach(it => { it._y -= drift; });
+  return sorted;
+}
+
+/* ---------- Fig 1 - rule fit per board ---------- */
+(function(){
+  const data = D.rules.slice().sort((a,b) =>
+    (a.rule === b.rule) ? b.fit_fail - a.fit_fail : (a.rule === 'exclude' ? -1 : 1));
+  const rowH = 32, padT = 10, padB = 36, L = 200, R = 58;
+  const W = 900, H = padT + data.length * rowH + padB;
+  const svg = document.getElementById('fig-rules');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const x0 = L, x1 = W - R, max = 41;
+  const sx = v => x0 + (v / max) * (x1 - x0);
+
+  for (let g = 0; g <= max; g += 10){
+    el('line', {x1: sx(g), x2: sx(g), y1: padT, y2: padT + data.length * rowH,
+      stroke: C('--line'), 'stroke-width': 1}, svg);
+    txt(svg, sx(g), padT + data.length * rowH + 16, g, {anchor: 'middle', size: 10, fill: C('--ink-3')});
+  }
+  txt(svg, (x0 + x1) / 2, H - 6, 'cells reproduced exactly (of 35-41)',
+      {anchor: 'middle', size: 10, fill: C('--ink-3')});
+
+  data.forEach((d, i) => {
+    const y = padT + i * rowH, isExc = d.rule === 'exclude';
+    const lbl = (d.contradicts ? '\u25cf  ' : '') + d.board;
+    txt(svg, L - 12, y + rowH / 2, lbl, {anchor: 'end', size: 11.5,
+      fill: d.contradicts ? C('--exclude') : C('--ink-2'),
+      weight: isExc ? 600 : 400});
+    [['fail', d.fit_fail, C('--fail')], ['exclude', d.fit_exc, C('--exclude')]]
+      .forEach(([k, v, col], j) => {
+        const bh = 9, by = y + 5 + j * (bh + 2);
+        const win = (k === 'exclude') === isExc;
+        const r = el('rect', {x: x0, y: by, width: Math.max(2, sx(v) - x0), height: bh,
+          rx: 4, fill: col, opacity: win ? 1 : .28}, svg);
+        bindTip(r, `<b>${d.board}</b><br>${k === 'exclude' ? 'refusal excluded' : 'refusal = failure'}<br>${v} of ${d.cells} cells reproduced<br>documented as: ${d.documented}`);
+        if (win) txt(svg, sx(v) + 7, by + bh / 2, `${v}/${d.cells}`,
+          {size: 10.5, fill: C('--ink-2'), weight: 600});
+      });
+  });
+})();
+
+/* ---------- Fig 2 - the swing ---------- */
+(function(){
+  const keys = [['pub', 'As published'], ['exc', 'All \u201cexclude\u201d'], ['fail', 'All \u201cfail\u201d']];
+  const rows = D.overall.filter(d => d.model.indexOf('Opus 5.5') === 0);
+  const W = 900, H = 410, T = 30, B = 58, L = 96, R = 220;
+  const svg = document.getElementById('fig-swing');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const lo = 28, hi = 62;
+  const sy = v => H - B - ((v - lo) / (hi - lo)) * (H - T - B);
+  const sx = i => L + i * ((W - R - L) / (keys.length - 1));
+
+  for (let v = 30; v <= 60; v += 5){
+    el('line', {x1: L, x2: W - R, y1: sy(v), y2: sy(v), stroke: C('--line'), 'stroke-width': 1}, svg);
+    txt(svg, L - 10, sy(v), v, {anchor: 'end', size: 10, fill: C('--ink-3')});
+  }
+  txt(svg, 16, (T + H - B) / 2, 'overall score', {anchor: 'middle', size: 10,
+    fill: C('--ink-3'), attrs: {transform: `rotate(-90 16 ${(T + H - B) / 2})`}});
+  keys.forEach(([, lbl], i) => txt(svg, sx(i), H - B + 22, lbl,
+    {anchor: 'middle', size: 11.5, fill: C('--ink-2'), weight: 500}));
+  txt(svg, sx(1), T - 14, 'the documented rule', {anchor: 'middle', size: 10, fill: C('--ink-3')});
+
+  const laid = rows.map(d => ({d, lsvp: d.model.indexOf('*') > -1,
+    col: d.model.indexOf('*') > -1 ? C('--fail') : C('--exclude'),
+    pts: keys.map(([k], i) => [sx(i), sy(d[k])])}));
+  laid.forEach(L2 => {
+    el('polyline', {points: L2.pts.map(p => p.join(',')).join(' '), fill: 'none',
+      stroke: L2.col, 'stroke-width': 2, 'stroke-linejoin': 'round'}, svg);
+    L2.pts.forEach((p, i) => {
+      el('circle', {cx: p[0], cy: p[1], r: 6.5, fill: C('--surface'),
+        stroke: L2.col, 'stroke-width': 2}, svg);
+      const c = el('circle', {cx: p[0], cy: p[1], r: 11, fill: 'transparent'}, svg);
+      bindTip(c, `<b>${L2.d.model}</b><br>${keys[i][1]}: ${L2.d[keys[i][0]]}<br>rank ${L2.d[['rk_pub','rk_exc','rk_fail'][i]]} of 38<br>min coverage ${L2.d.cov}%`);
+    });
+  });
+  const endX = sx(keys.length - 1);
+  spread(laid, L2 => L2.pts[L2.pts.length - 1][1], 34).forEach(L2 => {
+    const yEnd = L2.pts[L2.pts.length - 1][1];
+    if (Math.abs(L2._y - yEnd) > 3)
+      el('path', {d: `M${endX + 8} ${yEnd} L${endX + 14} ${L2._y}`, fill: 'none',
+        stroke: L2.col, 'stroke-width': 1, opacity: .5}, svg);
+    txt(svg, endX + 18, L2._y - 7, L2.d.model, {size: 11.5, fill: L2.col, weight: 600});
+    txt(svg, endX + 18, L2._y + 8, `min coverage ${L2.d.cov}%`, {size: 10, fill: C('--ink-3')});
+  });
+  spread(laid, L2 => L2.pts[0][1], 14).forEach(L2 => {
+    txt(svg, sx(0) - 34, L2._y, `#${L2.d.rk_pub}`, {anchor: 'end', size: 10.5,
+      fill: L2.col, weight: 600});
+  });
+})();
+
+/* ---------- table ---------- */
+(function(){
+  const tb = document.getElementById('tbl-overall');
+  const order = ['Opus 5.5 (Claude Code)', 'Opus 5.5 (Pi)', 'Opus 5.5* LSVP (Pi)',
+    'Opus 5.5* LSVP (CC)', 'Sonnet 5.5 (Pi)', 'GPT-6 Astra (Pi)', 'Grok 4.6 (Grok Build)'];
+  order.forEach(name => {
+    const d = D.overall.find(r => r.model === name);
+    if (!d) return;
+    const tr = document.createElement('tr');
+    if (name.indexOf('*') === -1 && name.indexOf('Opus 5.5') === 0) tr.className = 'hi';
+    const cell = (v, r) => `${v} <span class="rk">rank <b>${r}</b></span>`;
+    tr.innerHTML = `<td>${d.model}</td><td>${cell(d.pub, d.rk_pub)}</td>` +
+      `<td>${cell(d.exc, d.rk_exc)}</td><td>${cell(d.fail, d.rk_fail)}</td>` +
+      `<td>${d.cov}%</td>`;
+    tb.appendChild(tr);
+  });
+})();
+
+/* ---------- Fig 3 - board size vs interval width ---------- */
+(function(){
+  const data = D.boardsize.slice();
+  const W = 900, H = 430, T = 26, B = 58, L = 72, R = 252;
+  const svg = document.getElementById('fig-size');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const maxI = 200, maxW = 26;
+  const sx = v => L + (v / maxI) * (W - R - L);
+  const sy = v => H - B - (v / maxW) * (H - T - B);
+
+  [0, 5, 10, 15, 20, 25].forEach(v => {
+    el('line', {x1: L, x2: W - R, y1: sy(v), y2: sy(v), stroke: C('--line'), 'stroke-width': 1}, svg);
+    txt(svg, L - 10, sy(v), v, {anchor: 'end', size: 10, fill: C('--ink-3')});
+  });
+  [0, 50, 100, 150, 200].forEach(v =>
+    txt(svg, sx(v), H - B + 20, v, {anchor: 'middle', size: 10, fill: C('--ink-3')}));
+  txt(svg, (L + W - R) / 2, H - 10, 'items on the board', {anchor: 'middle', size: 10, fill: C('--ink-3')});
+  txt(svg, 16, (T + H - B) / 2, 'median 95% rank interval (places)', {anchor: 'middle',
+    size: 10, fill: C('--ink-3'), attrs: {transform: `rotate(-90 16 ${(T + H - B) / 2})`}});
+
+  const laid = data.map(d => ({d, small: d.items <= 25,
+    col: d.items <= 25 ? C('--exclude') : C('--fail'),
+    x: sx(d.items), y: sy(d.width)}));
+  laid.forEach(p => {
+    el('circle', {cx: p.x, cy: p.y, r: 6, fill: p.col, stroke: C('--surface'), 'stroke-width': 2}, svg);
+    const c = el('circle', {cx: p.x, cy: p.y, r: 13, fill: 'transparent'}, svg);
+    bindTip(c, `<b>${p.d.board}</b><br>${p.d.items} items<br>median rank interval ${p.d.width} places`);
+  });
+  // every label on the right with a leader: several boards sit within a few
+  // items and a couple of places of each other and would otherwise overprint
+  spread(laid, p => p.y, 21).forEach(p => {
+    el('path', {d: `M${p.x + 9} ${p.y} L${W - R + 10} ${p._y}`, fill: 'none',
+      stroke: p.col, 'stroke-width': 1, opacity: .4}, svg);
+    txt(svg, W - R + 15, p._y, `${p.d.board} (${p.d.items})`,
+      {size: 10.5, fill: p.small ? p.col : C('--ink-2'), weight: p.small ? 600 : 400});
+  });
+})();
+
+/* ---------- Fig 4 - rank intervals ---------- */
+(function(){
+  const data = D.ranks;
+  const rowH = 38, T = 12, B = 42, L = 196, R = 150;
+  const W = 900, H = T + data.length * rowH + B;
+  const svg = document.getElementById('fig-ranks');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const x0 = L, x1 = W - R, maxR = 38;
+  const sx = r => x0 + ((r - 1) / (maxR - 1)) * (x1 - x0);
+
+  [1, 5, 10, 15, 20, 25, 30, 38].forEach(g => {
+    el('line', {x1: sx(g), x2: sx(g), y1: T, y2: T + data.length * rowH,
+      stroke: C('--line'), 'stroke-width': 1}, svg);
+    txt(svg, sx(g), T + data.length * rowH + 16, g, {anchor: 'middle', size: 10, fill: C('--ink-3')});
+  });
+  txt(svg, (x0 + x1) / 2, H - 8, 'rank on the board  \u2190  better', {anchor: 'middle',
+    size: 10, fill: C('--ink-3')});
+
+  data.forEach((d, i) => {
+    const y = T + i * rowH + rowH / 2;
+    const thin = d.items < 55, col = thin ? C('--exclude') : C('--fail');
+    txt(svg, L - 12, y - 6, d.model, {anchor: 'end', size: 11.5, fill: C('--ink'),
+      weight: thin ? 600 : 400});
+    txt(svg, L - 12, y + 9, `${d.items} of 111 items`, {anchor: 'end', size: 10,
+      fill: thin ? C('--exclude') : C('--ink-3')});
+    const g = el('g', {}, svg);
+    el('line', {x1: sx(d.lo), x2: sx(d.hi), y1: y, y2: y, stroke: col,
+      'stroke-width': 7, 'stroke-linecap': 'round', opacity: .26}, g);
+    el('circle', {cx: sx(d.shown), cy: y, r: 6, fill: col,
+      stroke: C('--surface'), 'stroke-width': 2}, g);
+    const hitw = Math.max(26, sx(d.hi) - sx(d.lo) + 20);
+    const hit = el('rect', {x: sx(d.lo) - 10, y: y - 13, width: hitw, height: 26,
+      fill: 'transparent'}, g);
+    bindTip(hit, `<b>${d.model}</b><br>score ${d.score}% on ${d.items} of 111 items<br>shown at rank ${d.shown}<br>95% bootstrap interval [${d.lo}, ${d.hi}]<br>P(actually #1) = ${d.p1}%`);
+    txt(svg, sx(d.hi) + 14, y, `[${d.lo}, ${d.hi}]`, {size: 11, fill: C('--ink-2'), weight: 600});
+  });
+})();
+
+/* ---------- Fig 5 - subset fidelity ---------- */
+(function(){
+  const data = D.fidelity.slice().sort((a, b) => a.keep - b.keep);
+  const W = 900, H = 330, T = 30, B = 56, L = 72, R = 40;
+  const svg = document.getElementById('fig-fidelity');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const lo = .975, hi = 1.001;
+  const sy = v => H - B - ((v - lo) / (hi - lo)) * (H - T - B);
+  const sx = v => L + (v / 100) * (W - R - L);
+
+  [.98, .985, .99, .995, 1].forEach(v => {
+    el('line', {x1: L, x2: W - R, y1: sy(v), y2: sy(v), stroke: C('--line'), 'stroke-width': 1}, svg);
+    txt(svg, L - 10, sy(v), v.toFixed(3), {anchor: 'end', size: 10, fill: C('--ink-3')});
+  });
+  [20, 40, 60, 80, 100].forEach(v =>
+    txt(svg, sx(v), H - B + 20, v + '%', {anchor: 'middle', size: 10.5, fill: C('--ink-3')}));
+  txt(svg, (L + W - R) / 2, H - 10, 'share of items kept, most discriminating first',
+    {anchor: 'middle', size: 10, fill: C('--ink-3')});
+  txt(svg, 16, (T + H - B) / 2, 'Spearman \u03c1 vs full suite', {anchor: 'middle', size: 10,
+    fill: C('--ink-3'), attrs: {transform: `rotate(-90 16 ${(T + H - B) / 2})`}});
+
+  el('polyline', {points: data.map(d => `${sx(d.keep)},${sy(d.rho)}`).join(' '),
+    fill: 'none', stroke: C('--fail'), 'stroke-width': 2, 'stroke-linejoin': 'round'}, svg);
+  data.forEach(d => {
+    const star = d.keep === 30;
+    el('circle', {cx: sx(d.keep), cy: sy(d.rho), r: star ? 7 : 5,
+      fill: star ? C('--exclude') : C('--fail'), stroke: C('--surface'), 'stroke-width': 2}, svg);
+    const c = el('circle', {cx: sx(d.keep), cy: sy(d.rho), r: 14, fill: 'transparent'}, svg);
+    bindTip(c, `<b>keep top ${d.keep}%</b><br>${d.items} items \u00b7 $${d.cost.toLocaleString()}<br>Spearman \u03c1 = ${d.rho}<br>top-10 overlap ${d.top10}/10`);
+    txt(svg, sx(d.keep), sy(d.rho) - (star ? 20 : 15), '$' + Math.round(d.cost / 1000) + 'k',
+      {anchor: 'middle', size: 10.5, fill: star ? C('--exclude') : C('--ink-3'),
+       weight: star ? 600 : 400});
+  });
+  const s = data.find(d => d.keep === 30);
+  txt(svg, sx(30), sy(s.rho) + 26, '\u03c1 = ' + s.rho + ' \u00b7 ' + s.top10 + '/10 top-ten',
+    {anchor: 'middle', size: 10.5, fill: C('--exclude'), weight: 600});
+})();
+</script>

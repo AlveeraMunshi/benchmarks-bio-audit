@@ -178,6 +178,7 @@ pytest tests/ -v          # the scoring contract: 6 pass, 2 fail
 | `src/stability.py` | cluster bootstrap over items → rank intervals, per board and Overall |
 | `src/items.py` | item difficulty, discrimination, subset fidelity, dead-item profile |
 | `src/report.py` | runs everything, writes `out/` and the page's `figures.json` |
+| `src/make_artifact.py` | strips the standalone doctype/meta lines for the Artifact copy |
 | `docs/` | the published report page (GitHub Pages serves this folder) |
 
 *Audit by Alveera Munshi, October 2026. Data as published 2026-10-20.*
