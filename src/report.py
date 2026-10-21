@@ -174,6 +174,28 @@ def _figures(df, T, R, RI, OV, fid, it, bb):
     D["run"] = dict(turns=round(df[df.turnN > 0].turnSum.sum() / df[df.turnN > 0].turnN.sum()),
                     tokens=int(df.tokSum.sum() / df.tokN.sum()),
                     cost=round(df.costSum.sum() / df.costN.sum(), 2))
+    # the full board, under every rule, with the uncertainty and the coverage
+    # each row rests on - this is what the redesigned leaderboard renders from
+    who = df.groupby("mid").agg(model=("model", "first"), harness=("harness", "first"),
+                                org=("org", "first"))
+    rows = []
+    for mid in T.index:
+        iv = OV.loc[mid] if mid in OV.index else None
+        rows.append(dict(
+            mid=mid, model=who.at[mid, "model"], harness=who.at[mid, "harness"],
+            org=who.at[mid, "org"],
+            pub=round(T.at[mid, "as_published"], 1),
+            exc=round(T.at[mid, "all_exclude"], 1),
+            fail=round(T.at[mid, "all_fail"], 1),
+            rk_pub=int(T.at[mid, "rk_as_published"]),
+            rk_exc=int(T.at[mid, "rk_all_exclude"]),
+            rk_fail=int(T.at[mid, "rk_all_fail"]),
+            min_cov=round(T.at[mid, "min_coverage"], 1),
+            mean_cov=round(T.at[mid, "mean_coverage"], 1),
+            lo=int(iv.rank_lo) if iv is not None else None,
+            hi=int(iv.rank_hi) if iv is not None else None))
+    D["leaderboard"] = sorted(rows, key=lambda r: r["rk_pub"])
+
     D["overall_interval"] = dict(median_width=float(OV.interval_width.median()),
                                  board_median_width=float(RI.interval_width.median()),
                                  cov_corr=round(RI.coverage.corr(RI.interval_width, method="spearman"), 3))

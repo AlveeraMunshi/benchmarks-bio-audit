@@ -157,6 +157,15 @@ Four changes instead:
    when that interval is too wide to mean anything. *(This replaces a coverage floor I
    proposed first and then abandoned — see above: coverage does not drive width.)*
 
+### Made concrete
+
+The report page carries a **working leaderboard** built to those four rules: the
+scoring rule is named rather than assumed, rank is the bootstrap interval rather
+than a position, and coverage sits in the table instead of a footnote. Switching
+the rule reorders the board in place — Claude Opus 5.5 travels from 22nd to 1st
+(▲21) while its minimum coverage, 2.7%, stays visible in the same row. The
+movement *is* the finding rather than a claim about it.
+
 ```
 $ pytest tests/ -q
 ....FF..

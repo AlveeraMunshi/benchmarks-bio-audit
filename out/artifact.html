@@ -174,6 +174,54 @@ ol.fix li::before{
 }
 ol.fix b{display:block;font-weight:600;margin-bottom:2px}
 
+/* ---------- the redesigned leaderboard ---------- */
+.lb{background:var(--surface);border:1px solid var(--line);border-radius:9px;
+  padding:20px 20px 14px;box-shadow:var(--shadow);margin:30px 0}
+.lbCtl{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 6px}
+.lbCtl button{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;cursor:pointer;
+  background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line-2);
+  border-radius:6px;padding:7px 12px;transition:background .15s,color .15s,border-color .15s}
+.lbCtl button:hover{color:var(--ink)}
+.lbCtl button[aria-pressed="true"]{background:var(--ink);color:var(--ground);
+  border-color:var(--ink);font-weight:600}
+.lbCtl button[data-rule="exc"][aria-pressed="true"]{background:var(--exclude);border-color:var(--exclude);color:#fff}
+.lbCtl button[data-rule="fail"][aria-pressed="true"]{background:var(--fail);border-color:var(--fail);color:#fff}
+.lbNote{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin:0 0 16px}
+.lbHead,.lbRow{display:grid;grid-template-columns:76px 1fr 54px 120px 96px 52px;
+  gap:10px;align-items:center}
+.lbHead{font-family:var(--mono);font-size:10px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-3);padding:0 8px 8px;
+  border-bottom:1px solid var(--line-2)}
+.lbBody{position:relative;margin-top:4px}
+.lbRow{position:absolute;left:0;right:0;height:30px;padding:0 8px;border-radius:5px;
+  transition:transform .55s cubic-bezier(.4,0,.2,1),background .25s}
+.lbRow.mark{background:color-mix(in srgb,var(--exclude) 10%,transparent)}
+.lbRank{font-family:var(--mono);font-size:12px;font-weight:600;
+  font-variant-numeric:tabular-nums;color:var(--ink)}
+.lbRank s{text-decoration:none;color:var(--ink-3);font-weight:400}
+.lbName{font-size:13.5px;color:var(--ink);white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis}
+.lbName i{font-style:normal;color:var(--ink-3);font-size:11.5px}
+.lbScore{font-family:var(--mono);font-size:13px;font-weight:600;text-align:right;
+  font-variant-numeric:tabular-nums}
+.lbTrack{height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden}
+.lbTrack i{display:block;height:100%;border-radius:4px;transition:width .55s cubic-bezier(.4,0,.2,1)}
+.lbCov{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;
+  color:var(--ink-3);font-variant-numeric:tabular-nums}
+.lbCov .t{width:46px;height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden;flex:none}
+.lbCov .t i{display:block;height:100%;background:var(--ink-3);border-radius:3px}
+.lbCov.low{color:var(--exclude)}
+.lbCov.low .t i{background:var(--exclude)}
+.lbMove{font-family:var(--mono);font-size:11px;font-weight:600;text-align:right;
+  font-variant-numeric:tabular-nums;opacity:0;transition:opacity .35s}
+.lbMove.up{color:var(--exclude);opacity:1}
+.lbMove.down{color:var(--fail);opacity:1}
+@media (max-width:640px){
+  .lbHead,.lbRow{grid-template-columns:62px 1fr 48px 52px;gap:8px}
+  .lbHead span:nth-child(4),.lbRow .lbTrack,
+  .lbHead span:nth-child(5),.lbRow .lbCov{display:none}
+}
 pre.term{
   background:var(--surface);border:1px solid var(--line);border-radius:9px;
   padding:16px 18px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;
@@ -629,6 +677,44 @@ footer p{max-width:66ch;margin:0 0 8px}
   </section>
 
   <section>
+    <p class="kicker">The proposal, made concrete</p>
+    <h2>What I would ship instead</h2>
+    <p>
+      Every point above is really a question about what the board <em>shows</em>.
+      So here is the same 38 rows, rendered the way the four changes imply: the
+      rule named rather than assumed, rank given as the interval it supports,
+      and coverage in the table instead of a footnote.
+    </p>
+    <p>
+      <strong>Switch the rule and watch the board reorder.</strong> That movement
+      is the finding &mdash; not a claim about it.
+    </p>
+  </section>
+</div>
+
+<div class="wide">
+  <div class="lb">
+    <div class="lbCtl" role="group" aria-label="Scoring rule">
+      <button type="button" data-rule="pub"  aria-pressed="true">As published &mdash; mixed</button>
+      <button type="button" data-rule="exc"  aria-pressed="false">All boards &ldquo;exclude&rdquo;</button>
+      <button type="button" data-rule="fail" aria-pressed="false">All boards &ldquo;fail&rdquo;</button>
+    </div>
+    <p class="lbNote" id="lbNote"></p>
+    <div class="lbHead">
+      <span>Rank</span><span>Model</span><span style="text-align:right">Score</span>
+      <span>&nbsp;</span><span>Min coverage</span><span style="text-align:right">Move</span>
+    </div>
+    <div class="lbBody" id="lbBody"></div>
+  </div>
+  <p class="figsub" style="max-width:none;margin:10px 2px 0">
+    Rank is the 95% bootstrap interval over items, not a position. A row whose
+    weakest board falls under 80% coverage is marked, because under
+    &ldquo;exclude&rdquo; that score rests on a sample the model chose itself.
+  </p>
+</div>
+
+<div class="wrap">
+  <section>
     <p class="kicker"><b>Finding 3</b> &nbsp;&middot;&nbsp; the spend</p>
     <h2>37.7% of the budget buys no ranking information</h2>
     <p>
@@ -692,7 +778,7 @@ footer p{max-width:66ch;margin:0 0 8px}
 </footer>
 
 <script>
-const D = {"overall":[{"model":"Opus 5.5 (Claude Code)","pub":42.1,"exc":58.8,"fail":33.9,"rk_pub":22,"rk_exc":1,"rk_fail":31,"cov":2.7},{"model":"Opus 5.5 (Pi)","pub":42.3,"exc":58.2,"fail":33.1,"rk_pub":19,"rk_exc":4,"rk_fail":32,"cov":4.4},{"model":"Opus 5.5* LSVP (Pi)","pub":58.1,"exc":58.5,"fail":58.1,"rk_pub":1,"rk_exc":2,"rk_fail":1,"cov":95.8},{"model":"Opus 5.5* LSVP (CC)","pub":58.1,"exc":58.2,"fail":58.1,"rk_pub":2,"rk_exc":3,"rk_fail":2,"cov":98.3},{"model":"Sonnet 5.5 (Pi)","pub":54.2,"exc":55.2,"fail":52.5,"rk_pub":3,"rk_exc":5,"rk_fail":4,"cov":70.3},{"model":"GPT-6 Astra (Pi)","pub":51.3,"exc":51.3,"fail":49.3,"rk_pub":7,"rk_exc":9,"rk_fail":6,"cov":76.6},{"model":"Grok 4.6 (Grok Build)","pub":45.9,"exc":45.9,"fail":45.9,"rk_pub":15,"rk_exc":18,"rk_fail":14,"cov":100.0},{"model":"Opus 5 (Pi)","pub":50.0,"exc":50.4,"fail":47.7,"rk_pub":8,"rk_exc":10,"rk_fail":10,"cov":75.7},{"model":"Fable 5.1* LSVP (CC)","pub":53.2,"exc":54.0,"fail":53.2,"rk_pub":5,"rk_exc":7,"rk_fail":3,"cov":86.4}],"rules":[{"board":"BioSecBench-Function","rule":"exclude","documented":"exclude","contradicts":false,"fit_exc":38,"fit_fail":9,"cells":38},{"board":"BioSecBench-Surveillance","rule":"exclude","documented":"exclude","contradicts":false,"fit_exc":38,"fit_fail":10,"cells":38},{"board":"EpiBench","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":33,"fit_fail":38,"cells":38},{"board":"MetagenomicsBench","rule":"fail","documented":"fail","contradicts":false,"fit_exc":27,"fit_fail":37,"cells":37},{"board":"OncologyBench","rule":"fail","documented":"fail","contradicts":false,"fit_exc":27,"fit_fail":35,"cells":35},{"board":"SpatialBench","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":36,"fit_fail":38,"cells":38},{"board":"SpatialBench-Long","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":37,"fit_fail":41,"cells":41},{"board":"TxBench-Antibody","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":10,"fit_fail":37,"cells":37},{"board":"TxBench-Oligo","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":23,"fit_fail":38,"cells":38},{"board":"TxBench-Preclinical","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":33,"fit_fail":37,"cells":37},{"board":"VariantBench","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":32,"fit_fail":38,"cells":38},{"board":"scBench","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":33,"fit_fail":38,"cells":38},{"board":"scBench-Long","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":36,"fit_fail":41,"cells":41}],"ranks":[{"model":"Opus 5.5 (Pi)","score":73.6,"items":12,"shown":1,"lo":1,"hi":7,"p1":80.5},{"model":"Opus 5.5 (Claude Code)","score":61.5,"items":13,"shown":2,"lo":1,"hi":27,"p1":13.4},{"model":"Opus 5.5* LSVP (Pi)","score":56.1,"items":110,"shown":3,"lo":2,"hi":7,"p1":2.1},{"model":"Opus 5.5* LSVP (CC)","score":54.2,"items":110,"shown":4,"lo":2,"hi":10,"p1":0.8},{"model":"sonnet-5-5-claude-code","score":53.5,"items":82,"shown":5,"lo":2,"hi":11,"p1":2.0},{"model":"Sonnet 5.5 (Pi)","score":51.7,"items":78,"shown":6,"lo":2,"hi":15,"p1":0.5},{"model":"Fable 5.1* LSVP (CC)","score":48.9,"items":111,"shown":7,"lo":4,"hi":15,"p1":0.1},{"model":"GPT-6 Astra (Pi)","score":48.6,"items":85,"shown":8,"lo":2,"hi":15,"p1":0.6}],"boardsize":[{"board":"BioSecBench-Surveillance","items":102,"width":15.0},{"board":"EpiBench","items":106,"width":17.0},{"board":"BioSecBench-Function","items":111,"width":13.0},{"board":"MetagenomicsBench","items":100,"width":7.024999999999999},{"board":"OncologyBench","items":25,"width":21.0},{"board":"scBench","items":195,"width":11.5125},{"board":"scBench-Long","items":22,"width":20.0},{"board":"SpatialBench","items":115,"width":19.5},{"board":"SpatialBench-Long","items":21,"width":23.0},{"board":"TxBench-Antibody","items":100,"width":12.0},{"board":"TxBench-Oligo","items":113,"width":13.0},{"board":"TxBench-Preclinical","items":100,"width":12.0},{"board":"VariantBench","items":118,"width":10.0}],"fidelity":[{"keep":100,"items":1204,"cost":228695,"rho":1.0,"top10":10},{"keep":60,"items":722,"cost":121897,"rho":0.994,"top10":10},{"keep":40,"items":482,"cost":76231,"rho":0.989,"top10":9},{"keep":30,"items":361,"cost":61011,"rho":0.986,"top10":9},{"keep":20,"items":241,"cost":41508,"rho":0.981,"top10":10}],"items":{"total":1204,"dead":171,"dead_cost":51220,"zero":121,"uninf":400,"uninf_cost":87432,"total_cost":231697},"scale":{"boards":13,"evals":1228,"cells":46414,"runs":147182,"refusals":8452,"spend":231697,"tokens_b":300},"bias":{"n_cells":65,"mean_gap":-0.579,"ci_lo":-1.933,"ci_hi":0.728,"median_gap":0.399,"share_positive":0.538,"wilcoxon_p":0.613,"max_plausible_inflation":0.728},"suite":[{"board":"BioSecBench-Surveillance","category":"biosecurity","horizon":"short","assessment":"capabilities","evals":102},{"board":"EpiBench","category":"multiomics","horizon":"short","assessment":"capabilities","evals":106},{"board":"BioSecBench-Function","category":"biosecurity","horizon":"short","assessment":"capabilities","evals":111},{"board":"MetagenomicsBench","category":"multiomics","horizon":"short","assessment":"capabilities","evals":100},{"board":"OncologyBench","category":"applications","horizon":"long","assessment":"capabilities","evals":25},{"board":"scBench","category":"multiomics","horizon":"short","assessment":"capabilities","evals":195},{"board":"scBench-Long","category":"multiomics","horizon":"long","assessment":"capabilities","evals":22},{"board":"SpatialBench","category":"multiomics","horizon":"short","assessment":"capabilities","evals":115},{"board":"SpatialBench-Long","category":"multiomics","horizon":"long","assessment":"capabilities","evals":21},{"board":"TxBench-Antibody","category":"therapeutics","horizon":"short","assessment":"capabilities","evals":100},{"board":"TxBench-Oligo","category":"therapeutics","horizon":"short","assessment":"capabilities","evals":113},{"board":"TxBench-Preclinical","category":"therapeutics","horizon":"short","assessment":"capabilities","evals":100},{"board":"VariantBench","category":"multiomics","horizon":"short","assessment":"capabilities","evals":118},{"board":"BioSecBench-Refusal","category":"biosecurity","horizon":"short","assessment":"safeguards","evals":107}],"run":{"turns":31,"tokens":2145811,"cost":1.74},"overall_interval":{"median_width":4.0,"board_median_width":13.0,"cov_corr":0.003}};
+const D = {"overall":[{"model":"Opus 5.5 (Claude Code)","pub":42.1,"exc":58.8,"fail":33.9,"rk_pub":22,"rk_exc":1,"rk_fail":31,"cov":2.7},{"model":"Opus 5.5 (Pi)","pub":42.3,"exc":58.2,"fail":33.1,"rk_pub":19,"rk_exc":4,"rk_fail":32,"cov":4.4},{"model":"Opus 5.5* LSVP (Pi)","pub":58.1,"exc":58.5,"fail":58.1,"rk_pub":1,"rk_exc":2,"rk_fail":1,"cov":95.8},{"model":"Opus 5.5* LSVP (CC)","pub":58.1,"exc":58.2,"fail":58.1,"rk_pub":2,"rk_exc":3,"rk_fail":2,"cov":98.3},{"model":"Sonnet 5.5 (Pi)","pub":54.2,"exc":55.2,"fail":52.5,"rk_pub":3,"rk_exc":5,"rk_fail":4,"cov":70.3},{"model":"GPT-6 Astra (Pi)","pub":51.3,"exc":51.3,"fail":49.3,"rk_pub":7,"rk_exc":9,"rk_fail":6,"cov":76.6},{"model":"Grok 4.6 (Grok Build)","pub":45.9,"exc":45.9,"fail":45.9,"rk_pub":15,"rk_exc":18,"rk_fail":14,"cov":100.0},{"model":"Opus 5 (Pi)","pub":50.0,"exc":50.4,"fail":47.7,"rk_pub":8,"rk_exc":10,"rk_fail":10,"cov":75.7},{"model":"Fable 5.1* LSVP (CC)","pub":53.2,"exc":54.0,"fail":53.2,"rk_pub":5,"rk_exc":7,"rk_fail":3,"cov":86.4}],"rules":[{"board":"BioSecBench-Function","rule":"exclude","documented":"exclude","contradicts":false,"fit_exc":38,"fit_fail":9,"cells":38},{"board":"BioSecBench-Surveillance","rule":"exclude","documented":"exclude","contradicts":false,"fit_exc":38,"fit_fail":10,"cells":38},{"board":"EpiBench","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":33,"fit_fail":38,"cells":38},{"board":"MetagenomicsBench","rule":"fail","documented":"fail","contradicts":false,"fit_exc":27,"fit_fail":37,"cells":37},{"board":"OncologyBench","rule":"fail","documented":"fail","contradicts":false,"fit_exc":27,"fit_fail":35,"cells":35},{"board":"SpatialBench","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":36,"fit_fail":38,"cells":38},{"board":"SpatialBench-Long","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":37,"fit_fail":41,"cells":41},{"board":"TxBench-Antibody","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":10,"fit_fail":37,"cells":37},{"board":"TxBench-Oligo","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":23,"fit_fail":38,"cells":38},{"board":"TxBench-Preclinical","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":33,"fit_fail":37,"cells":37},{"board":"VariantBench","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":32,"fit_fail":38,"cells":38},{"board":"scBench","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":33,"fit_fail":38,"cells":38},{"board":"scBench-Long","rule":"fail","documented":"exclude","contradicts":true,"fit_exc":36,"fit_fail":41,"cells":41}],"ranks":[{"model":"Opus 5.5 (Pi)","score":73.6,"items":12,"shown":1,"lo":1,"hi":7,"p1":80.5},{"model":"Opus 5.5 (Claude Code)","score":61.5,"items":13,"shown":2,"lo":1,"hi":27,"p1":13.4},{"model":"Opus 5.5* LSVP (Pi)","score":56.1,"items":110,"shown":3,"lo":2,"hi":7,"p1":2.1},{"model":"Opus 5.5* LSVP (CC)","score":54.2,"items":110,"shown":4,"lo":2,"hi":10,"p1":0.8},{"model":"sonnet-5-5-claude-code","score":53.5,"items":82,"shown":5,"lo":2,"hi":11,"p1":2.0},{"model":"Sonnet 5.5 (Pi)","score":51.7,"items":78,"shown":6,"lo":2,"hi":15,"p1":0.5},{"model":"Fable 5.1* LSVP (CC)","score":48.9,"items":111,"shown":7,"lo":4,"hi":15,"p1":0.1},{"model":"GPT-6 Astra (Pi)","score":48.6,"items":85,"shown":8,"lo":2,"hi":15,"p1":0.6}],"boardsize":[{"board":"BioSecBench-Surveillance","items":102,"width":15.0},{"board":"EpiBench","items":106,"width":17.0},{"board":"BioSecBench-Function","items":111,"width":13.0},{"board":"MetagenomicsBench","items":100,"width":7.024999999999999},{"board":"OncologyBench","items":25,"width":21.0},{"board":"scBench","items":195,"width":11.5125},{"board":"scBench-Long","items":22,"width":20.0},{"board":"SpatialBench","items":115,"width":19.5},{"board":"SpatialBench-Long","items":21,"width":23.0},{"board":"TxBench-Antibody","items":100,"width":12.0},{"board":"TxBench-Oligo","items":113,"width":13.0},{"board":"TxBench-Preclinical","items":100,"width":12.0},{"board":"VariantBench","items":118,"width":10.0}],"fidelity":[{"keep":100,"items":1204,"cost":228695,"rho":1.0,"top10":10},{"keep":60,"items":722,"cost":121897,"rho":0.994,"top10":10},{"keep":40,"items":482,"cost":76231,"rho":0.989,"top10":9},{"keep":30,"items":361,"cost":61011,"rho":0.986,"top10":9},{"keep":20,"items":241,"cost":41508,"rho":0.981,"top10":10}],"items":{"total":1204,"dead":171,"dead_cost":51220,"zero":121,"uninf":400,"uninf_cost":87432,"total_cost":231697},"scale":{"boards":13,"evals":1228,"cells":46414,"runs":147182,"refusals":8452,"spend":231697,"tokens_b":300},"bias":{"n_cells":65,"mean_gap":-0.579,"ci_lo":-1.933,"ci_hi":0.728,"median_gap":0.399,"share_positive":0.538,"wilcoxon_p":0.613,"max_plausible_inflation":0.728},"suite":[{"board":"BioSecBench-Surveillance","category":"biosecurity","horizon":"short","assessment":"capabilities","evals":102},{"board":"EpiBench","category":"multiomics","horizon":"short","assessment":"capabilities","evals":106},{"board":"BioSecBench-Function","category":"biosecurity","horizon":"short","assessment":"capabilities","evals":111},{"board":"MetagenomicsBench","category":"multiomics","horizon":"short","assessment":"capabilities","evals":100},{"board":"OncologyBench","category":"applications","horizon":"long","assessment":"capabilities","evals":25},{"board":"scBench","category":"multiomics","horizon":"short","assessment":"capabilities","evals":195},{"board":"scBench-Long","category":"multiomics","horizon":"long","assessment":"capabilities","evals":22},{"board":"SpatialBench","category":"multiomics","horizon":"short","assessment":"capabilities","evals":115},{"board":"SpatialBench-Long","category":"multiomics","horizon":"long","assessment":"capabilities","evals":21},{"board":"TxBench-Antibody","category":"therapeutics","horizon":"short","assessment":"capabilities","evals":100},{"board":"TxBench-Oligo","category":"therapeutics","horizon":"short","assessment":"capabilities","evals":113},{"board":"TxBench-Preclinical","category":"therapeutics","horizon":"short","assessment":"capabilities","evals":100},{"board":"VariantBench","category":"multiomics","horizon":"short","assessment":"capabilities","evals":118},{"board":"BioSecBench-Refusal","category":"biosecurity","horizon":"short","assessment":"safeguards","evals":107}],"run":{"turns":31,"tokens":2145811,"cost":1.74},"leaderboard":[{"mid":"opus-5-5-lsvp-pi","model":"Claude Opus 5.5*","harness":"Pi","org":"Anthropic","pub":58.1,"exc":58.5,"fail":58.1,"rk_pub":1,"rk_exc":2,"rk_fail":1,"min_cov":95.8,"mean_cov":99.6,"lo":1,"hi":2},{"mid":"opus-5-5-lsvp-claude-code","model":"Claude Opus 5.5*","harness":"Claude Code","org":"Anthropic","pub":58.1,"exc":58.2,"fail":58.1,"rk_pub":2,"rk_exc":3,"rk_fail":2,"min_cov":98.3,"mean_cov":99.8,"lo":1,"hi":2},{"mid":"sonnet-5-5-pi","model":"Claude Sonnet 5.5","harness":"Pi","org":"Anthropic","pub":54.2,"exc":55.2,"fail":52.5,"rk_pub":3,"rk_exc":5,"rk_fail":4,"min_cov":70.3,"mean_cov":96.3,"lo":3,"hi":5},{"mid":"sonnet-5-5-claude-code","model":"Claude Sonnet 5.5","harness":"Claude Code","org":"Anthropic","pub":53.9,"exc":54.7,"fail":52.2,"rk_pub":4,"rk_exc":6,"rk_fail":5,"min_cov":73.9,"mean_cov":97.2,"lo":3,"hi":6},{"mid":"fable-5-1-lsvp-claude-code","model":"Claude Fable 5.1*","harness":"Claude Code","org":"Anthropic","pub":53.2,"exc":54.0,"fail":53.2,"rk_pub":5,"rk_exc":7,"rk_fail":3,"min_cov":86.4,"mean_cov":98.6,"lo":3,"hi":7},{"mid":"gpt-6-1-sol-pi","model":"GPT-6.1 Sol","harness":"Pi","org":"OpenAI","pub":51.7,"exc":51.7,"fail":49.1,"rk_pub":6,"rk_exc":8,"rk_fail":7,"min_cov":75.7,"mean_cov":95.8,"lo":4,"hi":8},{"mid":"gpt-6-astra-pi","model":"GPT-6 Astra","harness":"Pi","org":"OpenAI","pub":51.3,"exc":51.3,"fail":49.3,"rk_pub":7,"rk_exc":9,"rk_fail":6,"min_cov":76.6,"mean_cov":96.8,"lo":5,"hi":9},{"mid":"opus-5-pi","model":"Claude Opus 5","harness":"Pi","org":"Anthropic","pub":50.0,"exc":50.4,"fail":47.7,"rk_pub":8,"rk_exc":10,"rk_fail":10,"min_cov":75.7,"mean_cov":95.4,"lo":6,"hi":11},{"mid":"gpt-6-1-sol-codex","model":"GPT-6.1 Sol","harness":"Codex","org":"OpenAI","pub":49.7,"exc":49.8,"fail":47.2,"rk_pub":9,"rk_exc":11,"rk_fail":13,"min_cov":74.8,"mean_cov":95.7,"lo":7,"hi":12},{"mid":"opus-5-claude-code","model":"Claude Opus 5","harness":"Claude Code","org":"Anthropic","pub":49.3,"exc":49.4,"fail":48.0,"rk_pub":10,"rk_exc":12,"rk_fail":8,"min_cov":82.9,"mean_cov":97.4,"lo":7,"hi":12},{"mid":"gpt-6-astra-codex","model":"GPT-6 Astra","harness":"Codex","org":"OpenAI","pub":49.2,"exc":49.3,"fail":47.7,"rk_pub":11,"rk_exc":13,"rk_fail":9,"min_cov":79.3,"mean_cov":97.1,"lo":8,"hi":13},{"mid":"grok-4-6-pi","model":"Grok 4.6","harness":"Pi","org":"SpaceXAI","pub":47.4,"exc":47.4,"fail":47.2,"rk_pub":12,"rk_exc":15,"rk_fail":12,"min_cov":98.2,"mean_cov":99.8,"lo":10,"hi":14},{"mid":"grok-4-7-grok-build","model":"Grok 4.7","harness":"Grok Build","org":"SpaceXAI","pub":47.3,"exc":47.4,"fail":47.3,"rk_pub":13,"rk_exc":14,"rk_fail":11,"min_cov":99.1,"mean_cov":99.9,"lo":10,"hi":15},{"mid":"gpt-6-sol-pi","model":"GPT-6 Sol","harness":"Pi","org":"OpenAI","pub":46.7,"exc":46.8,"fail":44.6,"rk_pub":14,"rk_exc":16,"rk_fail":15,"min_cov":78.4,"mean_cov":96.3,"lo":12,"hi":16},{"mid":"grok-4-6-grok-build","model":"Grok 4.6","harness":"Grok Build","org":"SpaceXAI","pub":45.9,"exc":45.9,"fail":45.9,"rk_pub":15,"rk_exc":18,"rk_fail":14,"min_cov":100.0,"mean_cov":100.0,"lo":13,"hi":17},{"mid":"opus-4-8-pi","model":"Claude Opus 4.8","harness":"Pi","org":"Anthropic","pub":45.3,"exc":46.0,"fail":42.7,"rk_pub":16,"rk_exc":17,"rk_fail":16,"min_cov":69.4,"mean_cov":93.4,"lo":13,"hi":17},{"mid":"opus-4-8-claude-code","model":"Claude Opus 4.8","harness":"Claude Code","org":"Anthropic","pub":43.5,"exc":44.6,"fail":41.1,"rk_pub":17,"rk_exc":19,"rk_fail":18,"min_cov":58.6,"mean_cov":92.3,"lo":17,"hi":22},{"mid":"gpt-5-6-sol-pi","model":"GPT-5.6 Sol","harness":"Pi","org":"OpenAI","pub":43.3,"exc":43.4,"fail":40.7,"rk_pub":18,"rk_exc":20,"rk_fail":19,"min_cov":72.5,"mean_cov":95.2,"lo":16,"hi":22},{"mid":"opus-5-5-pi","model":"Claude Opus 5.5","harness":"Pi","org":"Anthropic","pub":42.3,"exc":58.2,"fail":33.1,"rk_pub":19,"rk_exc":4,"rk_fail":32,"min_cov":4.4,"mean_cov":59.8,"lo":16,"hi":26},{"mid":"deepseek-v4-1-flash-pi","model":"DeepSeek V4.1 Flash","harness":"Pi","org":"DeepSeek","pub":42.3,"exc":42.3,"fail":42.3,"rk_pub":20,"rk_exc":21,"rk_fail":17,"min_cov":100.0,"mean_cov":100.0,"lo":17,"hi":24},{"mid":"gpt-5-6-sol-codex","model":"GPT-5.6 Sol","harness":"Codex","org":"OpenAI","pub":42.2,"exc":42.3,"fail":39.6,"rk_pub":21,"rk_exc":22,"rk_fail":22,"min_cov":75.7,"mean_cov":95.5,"lo":18,"hi":25},{"mid":"opus-5-5-claude-code","model":"Claude Opus 5.5","harness":"Claude Code","org":"Anthropic","pub":42.1,"exc":58.8,"fail":33.9,"rk_pub":22,"rk_exc":1,"rk_fail":31,"min_cov":2.7,"mean_cov":62.7,"lo":16,"hi":27},{"mid":"gpt-5-5-pi","model":"GPT-5.5","harness":"Pi","org":"OpenAI","pub":41.9,"exc":42.0,"fail":39.9,"rk_pub":23,"rk_exc":23,"rk_fail":20,"min_cov":74.8,"mean_cov":95.5,"lo":18,"hi":25},{"mid":"sonnet-5-pi","model":"Claude Sonnet 5","harness":"Pi","org":"Anthropic","pub":40.9,"exc":41.4,"fail":38.5,"rk_pub":24,"rk_exc":24,"rk_fail":23,"min_cov":68.5,"mean_cov":93.4,"lo":20,"hi":26},{"mid":"gemini-3-7-flash-pi","model":"Gemini 3.7 Flash","harness":"Pi","org":"Google","pub":40.8,"exc":40.8,"fail":39.7,"rk_pub":25,"rk_exc":25,"rk_fail":21,"min_cov":80.4,"mean_cov":97.6,"lo":20,"hi":27},{"mid":"sonnet-5-claude-code","model":"Claude Sonnet 5","harness":"Claude Code","org":"Anthropic","pub":39.8,"exc":40.6,"fail":37.7,"rk_pub":26,"rk_exc":26,"rk_fail":24,"min_cov":66.7,"mean_cov":93.3,"lo":23,"hi":28},{"mid":"opus-4-7-pi","model":"Claude Opus 4.7","harness":"Pi","org":"Anthropic","pub":38.6,"exc":39.0,"fail":37.0,"rk_pub":27,"rk_exc":27,"rk_fail":26,"min_cov":75.7,"mean_cov":95.7,"lo":25,"hi":30},{"mid":"opus-4-7-claude-code","model":"Claude Opus 4.7","harness":"Claude Code","org":"Anthropic","pub":38.5,"exc":38.9,"fail":37.4,"rk_pub":28,"rk_exc":28,"rk_fail":25,"min_cov":82.9,"mean_cov":96.5,"lo":25,"hi":30},{"mid":"gemini-3-8-flash-pi","model":"Gemini 3.8 Flash","harness":"Pi","org":"Google","pub":37.7,"exc":38.1,"fail":36.6,"rk_pub":29,"rk_exc":29,"rk_fail":27,"min_cov":80.4,"mean_cov":98.1,"lo":26,"hi":31},{"mid":"gpt-6-luna-pi","model":"GPT-6 Luna","harness":"Pi","org":"OpenAI","pub":37.2,"exc":37.2,"fail":35.3,"rk_pub":30,"rk_exc":30,"rk_fail":29,"min_cov":76.6,"mean_cov":96.0,"lo":27,"hi":31},{"mid":"kimi-k3-pi","model":"Kimi K3","harness":"Pi","org":"Moonshot","pub":36.3,"exc":36.3,"fail":36.3,"rk_pub":31,"rk_exc":31,"rk_fail":28,"min_cov":100.0,"mean_cov":100.0,"lo":29,"hi":32},{"mid":"mistral-large-4-0-pi","model":"Mistral Large 4.0 Preview","harness":"Pi","org":"Mistral","pub":34.5,"exc":34.5,"fail":34.5,"rk_pub":32,"rk_exc":32,"rk_fail":30,"min_cov":100.0,"mean_cov":100.0,"lo":31,"hi":34},{"mid":"gpt-5-6-luna-codex","model":"GPT-5.6 Luna","harness":"Codex","org":"OpenAI","pub":33.5,"exc":33.6,"fail":31.5,"rk_pub":33,"rk_exc":33,"rk_fail":33,"min_cov":74.5,"mean_cov":95.9,"lo":32,"hi":34},{"mid":"gpt-5-6-luna-pi","model":"GPT-5.6 Luna","harness":"Pi","org":"OpenAI","pub":32.9,"exc":33.0,"fail":31.1,"rk_pub":34,"rk_exc":34,"rk_fail":34,"min_cov":74.5,"mean_cov":95.9,"lo":33,"hi":35},{"mid":"sonnet-4-6-pi","model":"Claude Sonnet 4.6","harness":"Pi","org":"Anthropic","pub":31.5,"exc":32.0,"fail":30.2,"rk_pub":35,"rk_exc":35,"rk_fail":35,"min_cov":69.4,"mean_cov":94.7,"lo":33,"hi":36},{"mid":"sonnet-4-6-claude-code","model":"Claude Sonnet 4.6","harness":"Claude Code","org":"Anthropic","pub":31.1,"exc":31.3,"fail":30.1,"rk_pub":36,"rk_exc":36,"rk_fail":36,"min_cov":80.2,"mean_cov":96.5,"lo":34,"hi":36},{"mid":"nemotron-3-ultra-550b-a55b-pi","model":"Nemotron 3 Ultra 550B A55B","harness":"Pi","org":"NVIDIA","pub":24.6,"exc":24.6,"fail":24.6,"rk_pub":37,"rk_exc":37,"rk_fail":37,"min_cov":100.0,"mean_cov":100.0,"lo":37,"hi":37},{"mid":"nemotron-3-5-lightning-pi","model":"Nemotron 3.5 Lightning","harness":"Pi","org":"NVIDIA","pub":14.7,"exc":14.7,"fail":14.7,"rk_pub":38,"rk_exc":38,"rk_fail":38,"min_cov":100.0,"mean_cov":100.0,"lo":38,"hi":38}],"overall_interval":{"median_width":4.0,"board_median_width":13.0,"cov_corr":0.003}};
 
 const tip = document.getElementById('tip');
 function bindTip(el, html){
@@ -734,6 +820,83 @@ function spread(items, getY, gap){
   sorted.forEach(it => { it._y -= drift; });
   return sorted;
 }
+
+/* ---------- the redesigned leaderboard ----------
+   The point of the rule switch is that it is the finding, acted out: the same
+   runs, re-priced, and twenty-one places of movement you can watch rather than
+   be told about. Rows are positioned rather than re-ordered in the DOM so the
+   movement is a transform and the eye can follow a row across it. */
+(function(){
+  const body = document.getElementById('lbBody');
+  const note = document.getElementById('lbNote');
+  if (!body || !D.leaderboard) return;
+  const ROW = 30, FLOOR = 80;
+  const KEY = { pub: ['pub', 'rk_pub'], exc: ['exc', 'rk_exc'], fail: ['fail', 'rk_fail'] };
+  const NOTE = {
+    pub: 'Two boards drop refusals, eleven count them as failures. This is the board as it stands today.',
+    exc: 'The rule every board documents, applied to all thirteen. A refusal costs nothing anywhere.',
+    fail: 'A refusal is a wrong answer on every board. Nobody is scored on a sample they chose.'
+  };
+  const COL = { pub: C('--ink-3'), exc: C('--exclude'), fail: C('--fail') };
+  let rule = 'pub';
+
+  const rows = D.leaderboard.map(d => {
+    const el = document.createElement('div');
+    el.className = 'lbRow';
+    const mark = d.mid === 'opus-5-5-claude-code' || d.mid === 'opus-5-5-pi';
+    if (mark) el.classList.add('mark');
+    el.innerHTML =
+      `<span class="lbRank"></span>` +
+      `<span class="lbName">${d.model} <i>${d.harness}</i></span>` +
+      `<span class="lbScore"></span>` +
+      `<span class="lbTrack"><i></i></span>` +
+      `<span class="lbCov"><span class="t"><i style="width:${d.min_cov}%"></i></span>` +
+        `<span>${d.min_cov}%</span></span>` +
+      `<span class="lbMove"></span>`;
+    body.appendChild(el);
+    return { d, el,
+      rank: el.querySelector('.lbRank'), score: el.querySelector('.lbScore'),
+      bar: el.querySelector('.lbTrack i'), cov: el.querySelector('.lbCov'),
+      move: el.querySelector('.lbMove') };
+  });
+  body.style.height = rows.length * ROW + 'px';
+
+  function draw(next, animateFrom){
+    const [sk, rk] = KEY[next];
+    const max = Math.max(...rows.map(r => r.d[sk]));
+    note.textContent = NOTE[next];
+    rows.forEach(r => {
+      const pos = r.d[rk];
+      r.el.style.transform = `translateY(${(pos - 1) * ROW}px)`;
+      r.score.textContent = r.d[sk].toFixed(1);
+      r.bar.style.width = (r.d[sk] / max * 100) + '%';
+      r.bar.style.background = COL[next];
+      /* The interval is only honest for the published board - it is the
+         bootstrap of THAT aggregation - so the others show a plain rank. */
+      r.rank.innerHTML = next === 'pub' && r.d.lo != null
+        ? (r.d.lo === r.d.hi ? `${r.d.lo}` : `${r.d.lo}<s>\u2013</s>${r.d.hi}`)
+        : `${pos}`;
+      r.cov.classList.toggle('low', r.d.min_cov < FLOOR);
+      if (animateFrom){
+        const was = r.d[KEY[animateFrom][1]], now = pos, dx = was - now;
+        r.move.className = 'lbMove' + (dx > 0 ? ' up' : dx < 0 ? ' down' : '');
+        r.move.textContent = dx === 0 ? '' : (dx > 0 ? '\u25b2' : '\u25bc') + Math.abs(dx);
+      } else { r.move.className = 'lbMove'; r.move.textContent = ''; }
+    });
+  }
+
+  document.querySelectorAll('.lbCtl button').forEach(b => {
+    b.addEventListener('click', () => {
+      const next = b.dataset.rule;
+      if (next === rule) return;
+      document.querySelectorAll('.lbCtl button').forEach(o =>
+        o.setAttribute('aria-pressed', String(o === b)));
+      draw(next, rule);
+      rule = next;
+    });
+  });
+  draw('pub', null);
+})();
 
 /* ---------- Fig 0 - the suite ---------- */
 (function(){
