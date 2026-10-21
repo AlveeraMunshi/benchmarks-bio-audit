@@ -161,9 +161,23 @@ a silent change to the aggregation would fail too. The two that fail are the fin
 ```bash
 pip install pandas numpy scipy pyarrow pytest
 python3 src/fetch.py      # pull the published result files
+python3 src/explain.py    # how the method works, worked through on real numbers
 python3 src/report.py     # reproduce every number above -> out/
 pytest tests/ -v          # the scoring contract: 6 pass, 2 fail
 ```
+
+### How it works, in short
+
+The site publishes the raw counts *and* the score, so you can work backwards to
+the formula joining them. There are only two sensible things to do with a refused
+attempt — drop it (`correct / (runs - refused)`) or fail it (`correct / runs`) —
+so apply both to every published cell and see which lands on their number.
+
+When a model refuses nothing the two formulas are arithmetically identical, so
+that cell is silent rather than evidence. Across all 494 cells: **148 discriminate
+and pick a rule, 346 are silent, and 0 match neither.** No cell points the other
+way, which is why the claim is "all of them" rather than "most of them".
+`src/explain.py` prints this walkthrough from live data.
 
 ## Layout
 
@@ -177,6 +191,7 @@ pytest tests/ -v          # the scoring contract: 6 pass, 2 fail
 | `src/bias.py` | is exclusion dropping harder items? bounded, not just tested |
 | `src/stability.py` | cluster bootstrap over items → rank intervals, per board and Overall |
 | `src/items.py` | item difficulty, discrimination, subset fidelity, dead-item profile |
+| `src/explain.py` | **a runnable walkthrough of the method** — start here |
 | `src/report.py` | runs everything, writes `out/` and the page's `figures.json` |
 | `src/make_artifact.py` | strips the standalone doctype/meta lines for the Artifact copy |
 | `docs/` | the published report page (GitHub Pages serves this folder) |
