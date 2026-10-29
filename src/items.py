@@ -63,7 +63,10 @@ def dead_item_profile(df, items):
     dead = items[items.dead][["bench", "eval_id"]]
     f = [c for c in df.columns if c.startswith("facet_")]
     d = df.merge(dead.assign(is_dead=True), on=["bench", "eval_id"], how="left")
-    d["is_dead"] = d.is_dead.fillna(False).astype(bool)
+    # The left join leaves NaN for every item that is NOT dead. Fill as object
+    # then cast, rather than fillna(False) on an object column, which pandas
+    # 2.x deprecates and 3.x will stop silently downcasting.
+    d["is_dead"] = d.is_dead.notna()
     per_item = d.groupby(["bench", "eval_id"]).first().reset_index()
     out = []
     for col in f:

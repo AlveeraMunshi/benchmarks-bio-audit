@@ -1,3 +1,12 @@
+# macOS Finder metadata - noise in every directory, never wanted in the repo
+.DS_Store
+**/.DS_Store
+
+# Python
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# A download that failed validation is kept for inspection (see src/fetch.py)
+# but it is a local artefact, not part of the audit.
+*.rejected

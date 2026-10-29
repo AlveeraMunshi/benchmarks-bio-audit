@@ -46,7 +46,7 @@ def gap_table(df):
     return pd.DataFrame(rows)
 
 
-def bound(gaps, n_boot=20000, seed=0):
+def bound(gaps, n_boot=20_000, seed=0):
     """A bootstrap interval on the mean gap.
 
     Failing to reject is weak; an interval says how big the effect could

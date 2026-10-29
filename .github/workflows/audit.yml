@@ -1,0 +1,88 @@
+# The audit, run as CI.
+#
+# The proposal this repository makes to benchmarks.bio is that a published
+# number should be tested against its declared rule, so drift fails a build
+# instead of shipping. It would be odd to propose that and not do it, so:
+#
+#   harness  the rebuild reproduces all 494 board scores and all 38 Overall
+#            scores from the committed data. A hard gate - if this goes red
+#            this repository is wrong.
+#   finding  the two contract tests benchmarks.bio does not currently keep.
+#            Expected red, reported, never fatal. A PASS here is the news: it
+#            means the drift was fixed upstream.
+#   drift    weekly, against the LIVE site rather than the committed copy.
+#            Red means their published data moved and this audit is stale.
+
+name: audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "17 6 * * 1"   # Mondays, 06:17 UTC
+  workflow_dispatch:
+
+jobs:
+  harness:
+    name: harness - the rebuild must reproduce every published number
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: pytest (harness only)
+        run: pytest -m "not finding" -v
+      - name: the full pipeline runs end to end
+        run: python3 src/report.py
+
+  finding:
+    name: finding - expected red, reported not fatal
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: pytest (finding only)
+        id: finding
+        continue-on-error: true
+        run: pytest -m finding -v
+      - name: summarise
+        run: |
+          if [ "${{ steps.finding.outcome }}" = "failure" ]; then
+            echo "### Finding still stands" >> "$GITHUB_STEP_SUMMARY"
+            echo "The two contract tests still fail: benchmarks.bio continues to average two refusal rules." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### The finding no longer reproduces" >> "$GITHUB_STEP_SUMMARY"
+            echo "Both contract tests PASSED. The upstream drift appears to have been fixed - re-read the audit before citing it." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  drift:
+    name: drift - does the live site still match the committed copy?
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: re-fetch the published result files
+        run: python3 src/fetch.py
+      - name: the rebuild must still reproduce them
+        run: pytest -m "not finding" -v
+      - name: report any change to the committed data
+        run: |
+          if git diff --quiet -- data/raw; then
+            echo "No change upstream." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### benchmarks.bio published data has changed" >> "$GITHUB_STEP_SUMMARY"
+            git diff --stat -- data/raw >> "$GITHUB_STEP_SUMMARY"
+          fi

@@ -218,7 +218,7 @@
    "shown": 1,
    "lo": 1,
    "hi": 7,
-   "p1": 80.5
+   "p1": 81.0
   },
   {
    "model": "Opus 5.5 (Claude Code)",
@@ -227,7 +227,7 @@
    "shown": 2,
    "lo": 1,
    "hi": 27,
-   "p1": 13.4
+   "p1": 12.3
   },
   {
    "model": "Opus 5.5* LSVP (Pi)",
@@ -236,7 +236,7 @@
    "shown": 3,
    "lo": 2,
    "hi": 7,
-   "p1": 2.1
+   "p1": 2.4
   },
   {
    "model": "Opus 5.5* LSVP (CC)",
@@ -253,8 +253,8 @@
    "items": 82,
    "shown": 5,
    "lo": 2,
-   "hi": 11,
-   "p1": 2.0
+   "hi": 10,
+   "p1": 2.3
   },
   {
    "model": "Sonnet 5.5 (Pi)",
@@ -262,8 +262,8 @@
    "items": 78,
    "shown": 6,
    "lo": 2,
-   "hi": 15,
-   "p1": 0.5
+   "hi": 14,
+   "p1": 0.6
   },
   {
    "model": "Fable 5.1* LSVP (CC)",
@@ -271,7 +271,7 @@
    "items": 111,
    "shown": 7,
    "lo": 4,
-   "hi": 15,
+   "hi": 14,
    "p1": 0.1
   },
   {
@@ -279,16 +279,16 @@
    "score": 48.6,
    "items": 85,
    "shown": 8,
-   "lo": 2,
+   "lo": 3,
    "hi": 15,
-   "p1": 0.6
+   "p1": 0.5
   }
  ],
  "boardsize": [
   {
    "board": "BioSecBench-Surveillance",
    "items": 102,
-   "width": 15.0
+   "width": 15.5
   },
   {
    "board": "EpiBench",
@@ -303,7 +303,7 @@
   {
    "board": "MetagenomicsBench",
    "items": 100,
-   "width": 7.024999999999999
+   "width": 8.0
   },
   {
    "board": "OncologyBench",
@@ -313,7 +313,7 @@
   {
    "board": "scBench",
    "items": 195,
-   "width": 11.5125
+   "width": 11.5
   },
   {
    "board": "scBench-Long",
@@ -323,7 +323,7 @@
   {
    "board": "SpatialBench",
    "items": 115,
-   "width": 19.5
+   "width": 20.0
   },
   {
    "board": "SpatialBench-Long",
@@ -338,7 +338,7 @@
   {
    "board": "TxBench-Oligo",
    "items": 113,
-   "width": 13.0
+   "width": 12.5
   },
   {
    "board": "TxBench-Preclinical",
@@ -409,12 +409,12 @@
  "bias": {
   "n_cells": 65,
   "mean_gap": -0.579,
-  "ci_lo": -1.933,
-  "ci_hi": 0.728,
+  "ci_lo": -1.942,
+  "ci_hi": 0.717,
   "median_gap": 0.399,
   "share_positive": 0.538,
   "wilcoxon_p": 0.613,
-  "max_plausible_inflation": 0.728
+  "max_plausible_inflation": 0.717
  },
  "suite": [
   {
@@ -1064,7 +1064,7 @@
    "min_cov": 74.5,
    "mean_cov": 95.9,
    "lo": 33,
-   "hi": 35
+   "hi": 36
   },
   {
    "mid": "sonnet-4-6-pi",
@@ -1079,7 +1079,7 @@
    "rk_fail": 35,
    "min_cov": 69.4,
    "mean_cov": 94.7,
-   "lo": 33,
+   "lo": 34,
    "hi": 36
   },
   {
@@ -1134,6 +1134,10 @@
  "overall_interval": {
   "median_width": 4.0,
   "board_median_width": 13.0,
-  "cov_corr": 0.003
+  "cov_corr": -0.0
+ },
+ "provenance": {
+  "n_boot": 10000,
+  "seed": 0
  }
 }

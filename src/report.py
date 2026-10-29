@@ -1,5 +1,14 @@
-"""Run every check and write the tables behind the findings."""
-import json, pathlib, sys
+"""Run every check and write the tables behind the findings.
+
+    python3 src/report.py                     # the published settings
+    python3 src/report.py --boot 500          # a fast pass while iterating
+    python3 src/report.py --seed 7            # does the finding survive a reseed?
+
+Every bootstrap in here takes its resample count and its seed from the flags,
+and both are written into out/figures.json - so any number on the published
+page can be traced back to the exact run that produced it.
+"""
+import argparse, json, pathlib, sys
 import numpy as np
 import pandas as pd
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
@@ -15,9 +24,24 @@ def say(s=""):
     print(s); LOG.append(s)
 
 
-def main():
+def parse_args(argv=None):
+    """Bootstrap settings are CLI flags rather than constants so a reviewer can
+    re-run the whole audit under a different seed in one command - which is the
+    cheapest check that a finding is not an artefact of one resample draw."""
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    ap.add_argument("--boot", type=int, default=stability.N_BOOT, metavar="N",
+                    help=f"bootstrap resamples (default {stability.N_BOOT}; "
+                         "a few hundred is enough while iterating)")
+    ap.add_argument("--seed", type=int, default=0, metavar="N",
+                    help="seed for every bootstrap (default 0)")
+    return ap.parse_args(argv)
+
+
+def main(argv=None):
+    args = parse_args(argv)
     OUT.mkdir(exist_ok=True)
     df = load.tidy()
+    say(f"bootstrap: {args.boot:,} resamples, seed {args.seed}")
 
     say("## 0. Reproduction")
     b = scoring.board(df, scoring.as_published)
@@ -61,14 +85,15 @@ def main():
 
     say("\n## 3. Is exclusion dropping the harder items? (bounded, not just tested)")
     g = bias.gap_table(df); g.to_csv(OUT / "06_difficulty_gap.csv", index=False)
-    bb = bias.bound(g)
+    bb = bias.bound(g, n_boot=args.boot, seed=args.seed)
     say(f"cells={bb['n_cells']}  mean gap={bb['mean_gap']:+.2f} pts  "
         f"95% CI [{bb['ci_lo']:+.2f}, {bb['ci_hi']:+.2f}]  Wilcoxon p={bb['wilcoxon_p']:.3f}")
     say("=> any difficulty-selection effect is bounded under ~1 pt of item difficulty;"
         " the point estimates are close to right and the fix belongs elsewhere.")
 
     say("\n## 4. What a rank is actually worth")
-    frames = [stability.rank_intervals(df, bn, n_boot=2000) for bn in sorted(df.bench.unique())]
+    frames = [stability.rank_intervals(df, bn, n_boot=args.boot, seed=args.seed)
+              for bn in sorted(df.bench.unique())]
     RI = pd.concat(frames); RI.to_csv(OUT / "03_rank_intervals.csv", index=False)
     per = RI.groupby("bench").agg(models=("mid", "size"), items=("items_scored", "max"),
                                   min_cov=("coverage", "min"),
@@ -80,7 +105,7 @@ def main():
         f"{RI.interval_width.median():.0f} places")
     say(f"Spearman(coverage, interval width) = {RI.coverage.corr(RI.interval_width, method='spearman'):.3f}"
         "  -> width tracks BOARD SIZE, not refusals")
-    OV = stability.overall_rank_intervals(df, n_boot=1500)
+    OV = stability.overall_rank_intervals(df, n_boot=args.boot, seed=args.seed)
     OV.to_csv(OUT / "07_overall_rank_intervals.csv")
     say(f"Overall board, by contrast, is well identified: median interval "
         f"{OV.interval_width.median():.0f} places (it pools {df.eval_id.nunique():,} items)")
@@ -112,11 +137,14 @@ def main():
         " grader problem in particular pipelines rather than at hard science.")
 
     (OUT / "findings.txt").write_text("\n".join(LOG))
-    _figures(df, T, R, RI, OV, fid, it, bb)
+    _figures(df, T, R, RI, OV, fid, it, bb, args)
     say(f"\nwrote {OUT}")
 
 
-def _figures(df, T, R, RI, OV, fid, it, bb):
+def _figures(df, T, R, RI, OV, fid, it, bb, args):
+    """Write out/figures.json - the single file the published page reads, so
+    the page cannot state a number the pipeline did not compute. `args`
+    carries the bootstrap settings through purely so they can be recorded."""
     """Compact JSON the report page renders from, so the page cannot drift."""
     name = {"opus-5-5-claude-code": "Opus 5.5 (Claude Code)", "opus-5-5-pi": "Opus 5.5 (Pi)",
             "opus-5-5-lsvp-pi": "Opus 5.5* LSVP (Pi)", "opus-5-5-lsvp-claude-code": "Opus 5.5* LSVP (CC)",
@@ -199,6 +227,10 @@ def _figures(df, T, R, RI, OV, fid, it, bb):
     D["overall_interval"] = dict(median_width=float(OV.interval_width.median()),
                                  board_median_width=float(RI.interval_width.median()),
                                  cov_corr=round(RI.coverage.corr(RI.interval_width, method="spearman"), 3))
+    # Provenance for the published page: which resample count and seed these
+    # intervals came from. Without it a figure cannot be reproduced from the
+    # repo alone, only re-derived and hoped to match.
+    D["provenance"] = dict(n_boot=args.boot, seed=args.seed)
     (OUT / "figures.json").write_text(json.dumps(D, indent=1))
     # the published page reads the same file, so it cannot drift from the pipeline
     site = OUT.parent / "docs" / "figures.json"

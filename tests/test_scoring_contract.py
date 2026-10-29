@@ -1,9 +1,19 @@
 """The contract a benchmark suite should be able to state about its own scores.
 
-Five of these pass and two fail against the data published on 2026-10-20. The
-failures are the finding: they are what a CI job would have caught.
+Two kinds of test live here, and CI treats them differently.
 
-    pytest tests/ -v
+The unmarked ones are the HARNESS: they assert that this rebuild reproduces
+every published number. If one fails, this repository is wrong and the build
+should go red.
+
+The two marked `finding` are the FINDING: they assert the contract benchmarks.bio
+does not currently keep, so they fail on purpose. CI runs them separately and
+reports without failing the build — and if they ever start passing, that is the
+interesting event, because it means the drift was fixed upstream.
+
+    pytest tests/ -v                 # everything
+    pytest tests/ -m "not finding"   # the harness alone — must be green
+    pytest tests/ -m finding         # the finding — expected red
 """
 import json, pathlib, re
 
@@ -56,6 +66,7 @@ def test_each_board_declares_the_rule_it_actually_uses(df):
     assert not wrong, f"declared rule does not match published numbers: {wrong}"
 
 
+@pytest.mark.finding
 def test_methodology_text_matches_the_implementation(df):
     """FAILS TODAY on 9 of 13 boards.
 
@@ -79,6 +90,7 @@ def test_methodology_text_matches_the_implementation(df):
         + "\n  ".join(mismatched))
 
 
+@pytest.mark.finding
 def test_overall_does_not_average_boards_with_different_rules(df):
     """FAILS TODAY.
 

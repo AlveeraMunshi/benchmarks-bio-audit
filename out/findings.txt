@@ -1,3 +1,4 @@
+bootstrap: 10,000 resamples, seed 0
 ## 0. Reproduction
 board scores reproduced : 494/494  (max err 0.0050 pts)
 Overall reproduced      : 38/38  (max err 0.0035 pts)
@@ -31,7 +32,7 @@ grok-4-6-pi                   47.4         47.4      47.2          98.2         
 gpt-6-astra-codex             49.2         49.3      47.7          79.3             11.0            13.0  -2.0
 
 ## 3. Is exclusion dropping the harder items? (bounded, not just tested)
-cells=65  mean gap=-0.58 pts  95% CI [-1.93, +0.73]  Wilcoxon p=0.613
+cells=65  mean gap=-0.58 pts  95% CI [-1.94, +0.72]  Wilcoxon p=0.613
 => any difficulty-selection effect is bounded under ~1 pt of item difficulty; the point estimates are close to right and the fix belongs elsewhere.
 
 ## 4. What a rank is actually worth
@@ -39,20 +40,20 @@ cells=65  mean gap=-0.58 pts  95% CI [-1.93, +0.73]  Wilcoxon p=0.613
 bench                                                                                           
 spatialbench-long             41     21     66.7       23.0       38.0         SpatialBench-Long
 oncologybench                 35     25     56.0       21.0       27.0             OncologyBench
-scbench-long                  41     22     22.7       20.0       39.0              scBench-Long
-spatialbench                  38    115     99.1       19.5       24.0              SpatialBench
+scbench-long                  41     22     22.7       20.0       40.0              scBench-Long
+spatialbench                  38    115     99.1       20.0       24.0              SpatialBench
 epibench                      38    106     96.2       17.0       22.0                  EpiBench
-biosecbench-surveillance      38    102     42.2       15.0       21.0  BioSecBench-Surveillance
+biosecbench-surveillance      38    102     42.2       15.5       20.0  BioSecBench-Surveillance
 functionbench                 38    111     10.8       13.0       26.0      BioSecBench-Function
-txbench-od                    38    113      2.7       13.0       37.0             TxBench-Oligo
+txbench-od                    38    113      2.7       12.5       37.0             TxBench-Oligo
 txbench-ab                    37    100     16.0       12.0       28.0          TxBench-Antibody
-txbench-pp                    37    100     44.0       12.0       17.0       TxBench-Preclinical
+txbench-pp                    37    100     44.0       12.0       18.0       TxBench-Preclinical
 scbench                       38    195     94.9       11.5       18.0                   scBench
 variantbench                  38    118     86.4       10.0       14.0              VariantBench
-metagenomics                  37    100     65.0        7.0       11.0         MetagenomicsBench
+metagenomics                  37    100     65.0        8.0       11.0         MetagenomicsBench
 
 median 95% rank interval across all 494 board rows: 13 places
-Spearman(coverage, interval width) = 0.003  -> width tracks BOARD SIZE, not refusals
+Spearman(coverage, interval width) = -0.000  -> width tracks BOARD SIZE, not refusals
 Overall board, by contrast, is well identified: median interval 4 places (it pools 1,228 items)
 
 ## 5. What the suite spends on items that move nothing
