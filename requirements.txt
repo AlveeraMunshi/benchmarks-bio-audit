@@ -1,5 +1,8 @@
-pandas>=2.0
-numpy>=1.24
-scipy>=1.10
-pyarrow>=12.0
-pytest>=7.0
+# Pinned loosely on purpose: the audit reads published JSON and does arithmetic
+# on it, so it should not be sensitive to minor versions. CI installs this file
+# on a clean runner, which is what proves the claim.
+
+pandas>=2.0        # the tidy frame every module reads
+numpy>=1.24        # the bootstraps in stability.py and bias.py
+scipy>=1.10        # Wilcoxon signed-rank (bias.py), Spearman (items.py)
+pytest>=7.0        # the harness/finding split, see pytest.ini
