@@ -227,6 +227,35 @@ def _figures(df, T, R, RI, OV, fid, it, bb, args):
     D["overall_interval"] = dict(median_width=float(OV.interval_width.median()),
                                  board_median_width=float(RI.interval_width.median()),
                                  cov_corr=round(RI.coverage.corr(RI.interval_width, method="spearman"), 3))
+    # The LSVP control, computed rather than asserted. The published page quotes
+    # these four numbers in prose, and tests/test_published_page.py checks the
+    # page against this block - so the control cannot drift from the data the
+    # way a hand-typed figure would.
+    #
+    # Pairing is same-harness on purpose (both Pi): that isolates the LSVP
+    # variant from the harness, which a cross-harness comparison would confound.
+    std, lsvp = "opus-5-5-pi", "opus-5-5-lsvp-pi"
+    a = df[df.mid == std].set_index(["bench", "eval_id"])
+    b = df[df.mid == lsvp].set_index(["bench", "eval_id"])
+    shared = a.index.intersection(b.index)
+    j = a.loc[shared, ["correct", "gradeable"]].join(
+        b.loc[shared, ["correct", "gradeable"]], lsuffix="_std", rsuffix="_lsvp")
+    # Only items BOTH arms actually attempted can compare ability; an item one
+    # arm refused has no score on that side to compare against.
+    both = j[(j.gradeable_std > 0) & (j.gradeable_lsvp > 0)]
+    D["control"] = dict(
+        items_std=int(len(a)), items_lsvp=int(len(b)), items_shared=int(len(shared)),
+        items_both_attempted=int(len(both)),
+        acc_std=round(100 * (both.correct_std / both.gradeable_std).mean(), 1),
+        acc_lsvp=round(100 * (both.correct_lsvp / both.gradeable_lsvp).mean(), 1),
+        refusal_pct_std=round(100 * df[df.mid == std].refused.sum()
+                              / df[df.mid == std].runs.sum(), 1),
+        refusal_pct_lsvp=round(100 * df[df.mid == lsvp].refused.sum()
+                               / df[df.mid == lsvp].runs.sum(), 1))
+    say(f"\n## LSVP control (same harness, Pi): {D['control']['items_both_attempted']} "
+        f"items both attempted, accuracy {D['control']['acc_std']}% vs "
+        f"{D['control']['acc_lsvp']}%")
+
     # Provenance for the published page: which resample count and seed these
     # intervals came from. Without it a figure cannot be reproduced from the
     # repo alone, only re-derived and hoped to match.

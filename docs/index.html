@@ -454,6 +454,31 @@ footer p{max-width:66ch;margin:0 0 8px}
       which is why the claim below is &ldquo;all of them&rdquo; and not &ldquo;most of
       them&rdquo;. <code>src/explain.py</code> prints this walkthrough from live data.
     </p>
+    <p>
+      <b>Nor is it the wrong formula.</b> &ldquo;Two rules&rdquo; is the interesting
+      reading, so it deserves the hostile test: could a <em>single</em> uniform formula
+      reproduce all thirteen boards? I crossed every denominator the published counts
+      allow (<code>runs</code>, minus refusals, minus timeouts, minus both) with three
+      aggregations &mdash; the mean of per-evaluation rates, the same counting a
+      fully-refused evaluation as zero, and one pooled division. Twelve candidates, each
+      scored against all 494 cells.
+    </p>
+    <dl class="fidelity">
+      <div><dt>mean of rates, over <code>runs</code></dt><dd>11/13</dd></div>
+      <div><dt>mean of rates, over <code>runs &minus; refusals</code></dt><dd>2/13</dd></div>
+      <div><dt>one pooled division</dt><dd>8/13</dd></div>
+      <div><dt>anything excluding timeouts</dt><dd>&le;1/13</dd></div>
+    </dl>
+    <p>
+      No single formula reproduces all thirteen, and the two that work are exactly
+      complementary: <code>runs</code> fits the eleven non-biosecurity boards and nothing
+      else, <code>runs &minus; refusals</code> fits the two biosecurity boards at 38/38
+      each and nothing else. The split is not a guess that happens to fit &mdash; it is
+      the only thing in a twelve-candidate space that fits at all. The same sweep pinned
+      down a detail the rest of this page rests on: the excluding boards genuinely
+      <em>drop</em> fully-refused evaluations rather than scoring them zero
+      (38/38 against 12/38).
+    </p>
   </section>
 
   <section>
@@ -466,6 +491,22 @@ footer p{max-width:66ch;margin:0 0 8px}
       (<span class="num" style="color:var(--exclude)">refusal excluded</span>), and the
       fit is unambiguous &mdash; the correct rule reproduces a board exactly, the wrong
       one does not.
+    </p>
+    <p>
+      <b>One caveat, and it is the first objection worth raising.</b> The two boards that
+      exclude refusals are both <em>biosecurity</em> boards, where declining to explain a
+      pathogen-enhancement protocol is arguably the right behaviour. Not penalising a
+      refusal there is a defensible choice, and I would expect it to be a deliberate one.
+      The charge is therefore <em>not</em> that either rule is wrong on its own board.
+    </p>
+    <p>
+      What does not survive that defence is <b>averaging across them</b>. The Overall
+      score adds two &ldquo;refusals don't count&rdquo; board scores to eleven
+      &ldquo;refusals count&rdquo; board scores and publishes the result as one number
+      &mdash; which is then in no currency at all. Two individually reasonable rules still
+      cannot be averaged into a single score. That is the finding, and it stands whether
+      or not the per-board split was intended; the documentation drift below is how I
+      <em>found</em> it, not the charge itself.
     </p>
   </section>
 </div>
@@ -541,6 +582,14 @@ footer p{max-width:66ch;margin:0 0 8px}
       scores ~58 under <b>every</b> rule. The standard run of that same model swings 25
       points, entirely on what it declined to answer. The spread is a property of the
       scoring, not of the model.
+      <br><br>
+      <b>The obvious objection is that the starred variant is simply better</b>, which
+      would sink the comparison. It is not: the two runs were served <b>1,202 of the same
+      1,228 items</b>, and on the <b>719 both actually attempted</b> they score
+      <b>58.6%</b> against <b>58.2%</b> &mdash; a 0.3-point difference. Same items, same
+      harness, same ability, so the only thing left between the two rows is how often each
+      refused. All four cells are plotted here, both harnesses for both variants, which
+      separates the variant from the harness rather than confounding the two.
     </figcaption>
   </figure>
 </div>
@@ -618,7 +667,7 @@ footer p{max-width:66ch;margin:0 0 8px}
 
   <figure>
     <p class="fightitle">Where the two problems meet &mdash; BioSecBench-Function</p>
-    <p class="figsub">95% bootstrap rank interval over items, 2,000 resamples &middot; 38 rows on the board</p>
+    <p class="figsub">95% bootstrap rank interval over items, 10,000 resamples &middot; 38 rows on the board</p>
     <div class="legend">
       <span><i class="swatch" style="background:var(--exclude)"></i> scored on under half the board</span>
       <span><i class="swatch" style="background:var(--fail)"></i> scored on most of the board</span>
@@ -773,9 +822,7 @@ footer p{max-width:66ch;margin:0 0 8px}
       Code and data:
       <a href="https://github.com/AlveeraMunshi/benchmarks-bio-audit"
          style="color:var(--ink-2)">github.com/AlveeraMunshi/benchmarks-bio-audit</a>
-      &nbsp;&middot;&nbsp; Slides:
-      <a href="https://www.canva.com/d/1c56BQoplmB1NGd"
-         style="color:var(--ink-2)">the same findings as a deck</a>
+
     </p>
   </div>
 </footer>

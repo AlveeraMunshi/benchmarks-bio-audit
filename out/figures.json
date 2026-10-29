@@ -1136,6 +1136,16 @@
   "board_median_width": 13.0,
   "cov_corr": -0.0
  },
+ "control": {
+  "items_std": 1228,
+  "items_lsvp": 1202,
+  "items_shared": 1202,
+  "items_both_attempted": 719,
+  "acc_std": 58.6,
+  "acc_lsvp": 58.2,
+  "refusal_pct_std": 44.5,
+  "refusal_pct_lsvp": 0.7
+ },
  "provenance": {
   "n_boot": 10000,
   "seed": 0
